@@ -1,13 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {Button} from '../components/Button';
 import {Colors} from '../theme/theme';
 
-export function HomeScreen() {
+export function ExplainerScreen() {
   return (
     <View>
-      <Text style={styles.text}>{'HOME SCREEN'}</Text>
-      <Button text={'Hello'} />
+      <Text style={styles.text}>{'Explainer SCREEN'}</Text>
     </View>
   );
 }

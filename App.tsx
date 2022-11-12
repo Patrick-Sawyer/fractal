@@ -5,6 +5,7 @@ import {Colors} from './src/theme/theme';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/screens/HomeScreen';
+import {ExplainerScreen} from './src/screens/EplainerScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ const App = () => {
             headerShown: false,
           }}>
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Explainer" component={ExplainerScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
