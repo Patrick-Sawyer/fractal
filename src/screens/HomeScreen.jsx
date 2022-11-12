@@ -1,10 +1,16 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 export function HomeScreen() {
   return (
     <View>
-      <Text>{'HOME SCREEN'}</Text>
+      <Text style={styles.text}>{'HOME SCREEN'}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    color: '#ff0000',
+  },
+});
