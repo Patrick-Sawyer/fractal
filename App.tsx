@@ -5,7 +5,7 @@ import {Colors} from './src/theme/theme';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/screens/HomeScreen';
-import {ExplainerScreen} from './src/screens/EplainerScreen';
+import {ExplainerScreen} from './src/screens/ExplainerScreen';
 
 const Stack = createNativeStackNavigator();
 

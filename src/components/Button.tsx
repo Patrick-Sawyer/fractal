@@ -30,26 +30,30 @@ export function Button({
 
   const onPressOut = () => {
     setPressed(false);
-    setTimeout(() => {
-      onPress && onPress();
-    }, 200);
+    onPress && onPress();
   };
 
   return (
     <View style={styles.container}>
       <TouchableNativeFeedback
-        background={TouchableNativeFeedback.Ripple(Colors.white, false)}
+        background={TouchableNativeFeedback.Ripple(
+          'rgba(255,255,255,0.1)',
+          false,
+        )}
         onPressIn={onPressIn}
         onPressOut={onPressOut}>
         <View
           style={[
             styles.inner,
-            !transparent && {
-              backgroundColor: color,
-            },
-            pressed && styles.pressed,
+            !transparent &&
+              styles.shadow && {
+                backgroundColor: color,
+              },
+            pressed && (Platform.OS === 'ios' || !transparent) && styles.grey,
           ]}>
-          <Text style={[styles.text, pressed && styles.pressedText]}>
+          <Text
+            numberOfLines={1}
+            style={[styles.text, pressed && styles.translucent]}>
             {text}
           </Text>
         </View>
@@ -58,30 +62,52 @@ export function Button({
   );
 }
 
+interface ButtonWrapperProps {
+  children: JSX.Element;
+}
+
+export const ButtonWrapper = ({children}: ButtonWrapperProps) => {
+  return <View style={styles.buttonWrapper}>{children}</View>;
+};
+
 const styles = StyleSheet.create({
   text: {
     color: Colors.white,
     fontSize: 18,
     fontWeight: 'bold',
-    letterSpacing: 0.6,
+    letterSpacing: 0.4,
+    paddingHorizontal: 10,
   },
   container: {
     width: '100%',
-    height: 67,
-    padding: 10,
+    height: 60,
+    paddingTop: 10,
   },
   inner: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-
-    borderRadius: 1,
   },
-  pressed: {
-    backgroundColor: Colors.grey,
-    opacity: Platform.OS === 'ios' ? 0.5 : 0.2,
+  translucent: {
+    color: 'rgba(0,0,0,0.4)',
   },
-  pressedText: {
-    opacity: Platform.OS === 'ios' ? 0.3 : 1,
+  grey: {
+    backgroundColor: Colors.darkishGrey,
+  },
+  buttonWrapper: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    width: '100%',
+  },
+  shadow: {
+    elevation: 4,
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    shadowOpacity: 0.7,
+    shadowRadius: 4,
+    shadowColor: 'black',
+    shadowBlur: 20,
   },
 });
