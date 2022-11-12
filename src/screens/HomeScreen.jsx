@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {Colors} from '../theme/theme';
 
 export function HomeScreen() {
   return (
@@ -11,6 +12,6 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   text: {
-    color: '#ff0000',
+    color: Colors.white,
   },
 });
