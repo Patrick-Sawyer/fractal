@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {BackButton} from '../components/BackButton';
-import {Button, ButtonWrapper} from '../components/Button';
 import {Colors} from '../theme/theme';
+import {ScreenWrapper} from './components/ScreenWrapper';
 
 interface Props {
   navigation: any;
@@ -10,9 +9,9 @@ interface Props {
 
 export function ExplainerScreen({navigation}: Props) {
   return (
-    <View style={styles.container}>
-      <View style={styles.main}>
-        <View style={styles.block}>
+    <ScreenWrapper navigation={navigation}>
+      <>
+        <View style={styles.section}>
           <Text style={styles.bigText}>{'Julia sets'}</Text>
           <Text style={styles.text}>
             {
@@ -20,7 +19,7 @@ export function ExplainerScreen({navigation}: Props) {
             }
           </Text>
         </View>
-        <View style={styles.block}>
+        <View style={styles.section}>
           <Text style={styles.bigText}>{'Mandelbrot set'}</Text>
           <Text style={styles.text}>
             {
@@ -28,25 +27,13 @@ export function ExplainerScreen({navigation}: Props) {
             }
           </Text>
         </View>
-      </View>
-      <BackButton navigation={navigation} />
-    </View>
+      </>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'space-between',
-    height: '100%',
-    alignItems: 'center',
-    width: '100%',
-  },
-  main: {
-    flexGrow: 1,
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  block: {
+  section: {
     alignItems: 'center',
     padding: 15,
   },

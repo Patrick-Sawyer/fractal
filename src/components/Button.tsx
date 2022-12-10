@@ -73,30 +73,31 @@ export const ButtonWrapper = ({children}: ButtonWrapperProps) => {
 const styles = StyleSheet.create({
   text: {
     color: Colors.white,
-    fontSize: 18,
-    fontWeight: 'bold',
-    letterSpacing: 0.4,
+    fontSize: 15,
+    fontWeight: '500',
     paddingHorizontal: 10,
   },
   container: {
     width: '100%',
-    height: 60,
-    paddingTop: 10,
+    height: 50,
+    paddingBottom: 10,
   },
   inner: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 2,
   },
   translucent: {
     color: 'rgba(0,0,0,0.4)',
   },
   grey: {
     backgroundColor: Colors.darkishGrey,
+    opacity: 0.5,
   },
   buttonWrapper: {
     paddingHorizontal: 10,
-    paddingBottom: 10,
+    paddingBottom: 15,
     width: '100%',
   },
   shadow: {
