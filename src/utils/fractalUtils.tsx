@@ -23,93 +23,13 @@ export interface Coord {
   y: number;
 }
 
-export const ComplexMaths: ComplexMathsType = {
-  add: (a, b) => ({
-    real: a.real + b.real,
-    imaginary: a.imaginary + b.imaginary,
-  }),
-  square: ({real, imaginary}) => ({
-    real: real * real - imaginary * imaginary,
-    imaginary: real * imaginary * 2,
-  }),
-};
-
-const getAxisPosition = (
-  limits: AxisRange,
-  max: number,
-  position: number,
-): number => {
-  const fraction = position / max;
-  const range = limits.upper - limits.lower;
-  return range * fraction + limits.lower;
-};
-
-export const getCoord = (
-  size: number,
-  range: Range,
-  position: Coord,
-): Complex => ({
-  real: getAxisPosition(range.x, size, position.x),
-  imaginary: getAxisPosition(range.y, size, size - position.y),
-});
-
+const BLACK = [0, 0, 0, 255];
 const MAX_NUMBER = 10;
 const SENSITIVITY = 250;
-
-const hasHitMax = (x: Complex): boolean =>
-  Math.abs(x.real) > MAX_NUMBER || Math.abs(x.imaginary) > MAX_NUMBER;
 
 const CENTRE: Complex = {
   real: 0,
   imaginary: 0,
-};
-
-export const getFractal = (
-  size: number,
-  range: Range,
-  juliaSetValue: Complex | null,
-): number[] => {
-  const data: number[] = [];
-
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      let didMaxOut = false;
-      let howFast = 0;
-      const initCoord = getCoord(size, range, {x, y});
-      let iteration = juliaSetValue ? initCoord : CENTRE;
-
-      for (let i = 0; i < SENSITIVITY; i++) {
-        howFast++;
-        const square = ComplexMaths.square(iteration);
-        iteration = ComplexMaths.add(square, juliaSetValue || initCoord);
-
-        if (hasHitMax(iteration)) {
-          didMaxOut = true;
-          break;
-        }
-      }
-
-      const value = didMaxOut ? Math.pow(howFast / SENSITIVITY, 0.7) : 0;
-      data.push(value);
-    }
-  }
-
-  return data;
-};
-
-const BLACK = [0, 0, 0, 255];
-
-export const getColors = (data: number[]): number[] => {
-  const colorData: number[] = [];
-  data.forEach(value => {
-    if (value === 0) {
-      colorData.push(...BLACK);
-    } else {
-      // const color = calculateColor(value);
-      colorData.push(...calculateColor(value), 255);
-    }
-  });
-  return colorData;
 };
 
 interface Color {
@@ -142,20 +62,87 @@ const YELLOW = {
 
 const COLORS: Color[] = [YELLOW, ORANGE, RED, MAROON, PURPLE];
 
-const calculateColor = (value: number): number[] => {
-  const useThisValue = value * COLORS.length;
-  const index = Math.floor(value);
-  const valueInRange = useThisValue - index;
-
-  return getColorInfo(valueInRange, index);
+const getColorFromValue = (_: null, index: number) => {
+  const valueAsFraction = Math.pow(index / SENSITIVITY, 0.6);
+  const positionInColors = valueAsFraction * (COLORS.length - 1);
+  const lowerColorIndex = Math.floor(positionInColors);
+  const valueInRange = positionInColors - lowerColorIndex;
+  const color1 = COLORS[lowerColorIndex];
+  const color2 = COLORS[lowerColorIndex + 1];
+  const red = Math.round((color2.r - color1.r) * valueInRange + color1.r);
+  const green = Math.round((color2.g - color1.g) * valueInRange + color1.g);
+  const blue = Math.round((color2.b - color1.b) * valueInRange + color1.b);
+  return [red, green, blue];
 };
 
-const getColorInfo = (value: number, index: number): number[] => {
-  const color1 = COLORS[index];
-  const color2 = COLORS[index + 1];
-  const red = (color2.r - color1.r) * value + color1.r;
-  const green = (color2.g - color1.g) * value + color1.g;
-  const blue = (color2.b - color1.b) * value + color1.b;
+const COLOR_MAPPER = new Array(SENSITIVITY).fill(null).map(getColorFromValue);
 
-  return [red, green, blue];
+export const ComplexMaths: ComplexMathsType = {
+  add: (a, b) => ({
+    real: a.real + b.real,
+    imaginary: a.imaginary + b.imaginary,
+  }),
+  square: ({real, imaginary}) => ({
+    real: real * real - imaginary * imaginary,
+    imaginary: real * imaginary * 2,
+  }),
+};
+
+const getAxisPosition = (
+  limits: AxisRange,
+  max: number,
+  position: number,
+): number => {
+  const fraction = position / max;
+  const range = limits.upper - limits.lower;
+  return range * fraction + limits.lower;
+};
+
+export const getCoord = (
+  size: number,
+  range: Range,
+  position: Coord,
+): Complex => ({
+  real: getAxisPosition(range.x, size, position.x),
+  imaginary: getAxisPosition(range.y, size, size - position.y),
+});
+
+const hasHitMax = (x: Complex): boolean =>
+  Math.abs(x.real) > MAX_NUMBER || Math.abs(x.imaginary) > MAX_NUMBER;
+
+export const getFractalNew = (
+  size: number,
+  range: Range,
+  juliaSetValue: Complex | null,
+): number[] => {
+  const data: number[] = new Array(size * size * 4).fill(255);
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      let maxedOut = false;
+      let howFast = 0;
+      const initCoord = getCoord(size, range, {x, y});
+      let iteration = juliaSetValue ? initCoord : CENTRE;
+
+      for (let i = 0; i < SENSITIVITY - 1; i++) {
+        const square = ComplexMaths.square(iteration);
+        iteration = ComplexMaths.add(square, juliaSetValue || initCoord);
+
+        if (hasHitMax(iteration)) {
+          maxedOut = true;
+          break;
+        } else {
+          howFast++;
+        }
+      }
+
+      const color = maxedOut ? COLOR_MAPPER[howFast] : BLACK;
+      const index = 4 * (y * size + x);
+      data[index + 0] = color[0];
+      data[index + 1] = color[1];
+      data[index + 2] = color[2];
+    }
+  }
+
+  return data;
 };

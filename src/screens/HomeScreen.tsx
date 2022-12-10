@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import {Button} from '../components/Button';
+import {CoordIndicator} from '../components/CoordIndicator';
 import {Fractal} from '../components/Fractal';
 import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
@@ -92,14 +93,28 @@ export function HomeScreen({navigation}: Props) {
         onTouchStart={onPressFractal}
         onTouchEnd={onPressFractal}
         onTouchMove={onPressFractal}
-        style={{
-          height: size,
-          width: size,
-          backgroundColor: Colors.blackish,
-        }}>
+        style={[styles.fractal, {height: size, width: size}]}>
         {!loading && (
           <Fractal size={size} range={range} juliaSetValue={juliaSetValue} />
         )}
+        <View style={styles.ranges}>
+          <CoordIndicator
+            value={range.y.upper.toFixed(4) + 'i'}
+            position={{top: 0}}
+          />
+          <CoordIndicator
+            value={range.x.upper.toFixed(4)}
+            position={{right: -20, transform: [{rotate: '90deg'}]}}
+          />
+          <CoordIndicator
+            value={range.x.lower.toFixed(4)}
+            position={{left: -23, transform: [{rotate: '270deg'}]}}
+          />
+          <CoordIndicator
+            value={range.y.lower.toFixed(4) + 'i'}
+            position={{bottom: 0}}
+          />
+        </View>
       </View>
       <View style={styles.section}>
         <Button
@@ -158,5 +173,15 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 10,
     paddingTop: 10,
+  },
+  fractal: {
+    backgroundColor: Colors.blackish,
+  },
+  ranges: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

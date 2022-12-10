@@ -1,6 +1,6 @@
 import Canvas, {ImageData} from 'react-native-canvas';
 import React from 'react';
-import {Complex, getColors, getFractal, Range} from '../utils/fractalUtils';
+import {Complex, getFractalNew, Range} from '../utils/fractalUtils';
 import {PixelRatio} from 'react-native';
 
 interface Props {
@@ -17,8 +17,7 @@ function FractalComponent({range, juliaSetValue, size}: Props) {
       const context = canvas.getContext('2d');
       canvas.width = pixels;
       canvas.height = pixels;
-      const fractalData = getFractal(pixels, range, juliaSetValue);
-      const colorData = getColors(fractalData);
+      const colorData = getFractalNew(pixels, range, juliaSetValue);
       const data = new ImageData(canvas, colorData, pixels, pixels);
       context.putImageData(data, 0, 0);
     }
