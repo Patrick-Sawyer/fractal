@@ -7,19 +7,23 @@ interface Props {
   range: Range;
   juliaSetValue: Complex | null;
   size: number;
+  setLoading: (state: boolean) => void;
 }
 
-function FractalComponent({range, juliaSetValue, size}: Props) {
+function FractalComponent({range, juliaSetValue, size, setLoading}: Props) {
   const pixels = size * PixelRatio.get();
 
   const handleCanvas = async (canvas: Canvas) => {
     if (canvas) {
+      setLoading(true);
+      await new Promise(r => setTimeout(r, 50));
       const context = canvas.getContext('2d');
       canvas.width = pixels;
       canvas.height = pixels;
       const colorData = getFractalNew(pixels, range, juliaSetValue);
       const data = new ImageData(canvas, colorData, pixels, pixels);
       context.putImageData(data, 0, 0);
+      setLoading(false);
     }
   };
 

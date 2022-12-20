@@ -24,8 +24,8 @@ export interface Coord {
 }
 
 const BLACK = [0, 0, 0, 255];
-const MAX_NUMBER = 10;
-const SENSITIVITY = 250;
+const MAX_NUMBER = 3;
+const SENSITIVITY = 30;
 
 const CENTRE: Complex = {
   real: 0,
@@ -63,7 +63,7 @@ const YELLOW = {
 const COLORS: Color[] = [YELLOW, ORANGE, RED, MAROON, PURPLE];
 
 const getColorFromValue = (_: null, index: number) => {
-  const valueAsFraction = Math.pow(index / SENSITIVITY, 0.6);
+  const valueAsFraction = index / SENSITIVITY;
   const positionInColors = valueAsFraction * (COLORS.length - 1);
   const lowerColorIndex = Math.floor(positionInColors);
   const valueInRange = positionInColors - lowerColorIndex;

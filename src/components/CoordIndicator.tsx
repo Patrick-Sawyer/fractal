@@ -1,23 +1,30 @@
-import {StyleSheet, Text, ViewStyle} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {Colors} from '../theme/theme';
 
 interface Props {
-  value: string;
-  position: ViewStyle;
+  value: string | number;
+  rotate?: '90deg' | '180deg' | '270deg';
 }
 
-export function CoordIndicator({value, position}: Props) {
-  return <Text style={[styles.text, position]}>{value}</Text>;
+export function CoordIndicator({value, rotate}: Props) {
+  return (
+    <View style={[styles.wrapper, !!rotate && {transform: [{rotate}]}]}>
+      <Text style={[styles.text]}>{value}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  text: {
+  wrapper: {
     position: 'absolute',
-    color: Colors.white,
+    height: '100%',
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  text: {
+    color: Colors.white,
     fontSize: 13,
     paddingVertical: 2,
     paddingHorizontal: 5,

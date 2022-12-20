@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
+  ActivityIndicator,
   GestureResponderEvent,
   StyleSheet,
   Text,
@@ -38,34 +39,51 @@ const INIT_JULIA_SET_RANGE = {
   },
 };
 
+interface FractalSettings {
+  juliaSetValue: Complex | null;
+  range: Range;
+}
+
+const calcToFixedValue = ({range}: FractalSettings): number => {
+  const {upper, lower} = range.x;
+  const diff = upper - lower;
+  let blah = diff * 10000;
+  let result = 4;
+
+  while (blah < 1 && result < 10) {
+    blah = blah * 10;
+    result++;
+  }
+
+  return result;
+};
+
 export function HomeScreen({navigation}: Props) {
-  const [range, setRange] = useState<Range>(INIT_RANGE);
   const size = useWindowDimensions().width;
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
-  const [juliaSetValue, setJuliaSetValue] = useState<Complex | null>(null);
+  const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
+    range: INIT_RANGE,
+    juliaSetValue: null,
+  });
   const [loading, setLoading] = useState(true);
+  const toFixedValue = calcToFixedValue(fractalSettings);
 
   const onPressFractal = (e: GestureResponderEvent) => {
     const {locationX, locationY} = e.nativeEvent;
-    const newCoord = getCoord(size, range, {
+    const newCoord = getCoord(size, fractalSettings.range, {
       x: locationX,
       y: locationY,
     });
     setComplex(newCoord);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 100);
-  }, []);
-
   const zoom = () => {
-    const {upper, lower} = range.x;
+    const settings = {...fractalSettings};
+    const {upper, lower} = settings.range.x;
     const currentZoom = upper - lower;
     const newZoom = currentZoom / 20;
 
-    setRange({
+    settings.range = {
       x: {
         upper: complex.real + newZoom,
         lower: complex.real - newZoom,
@@ -74,7 +92,9 @@ export function HomeScreen({navigation}: Props) {
         upper: complex.imaginary + newZoom,
         lower: complex.imaginary - newZoom,
       },
-    });
+    };
+
+    setFractalSettings(settings);
   };
 
   return (
@@ -94,26 +114,32 @@ export function HomeScreen({navigation}: Props) {
         onTouchEnd={onPressFractal}
         onTouchMove={onPressFractal}
         style={[styles.fractal, {height: size, width: size}]}>
-        {!loading && (
-          <Fractal size={size} range={range} juliaSetValue={juliaSetValue} />
-        )}
-        <View style={styles.ranges}>
+        <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
+        <View style={styles.ranges} pointerEvents="none">
           <CoordIndicator
-            value={range.y.upper.toFixed(4) + 'i'}
-            position={{top: 0}}
+            value={fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'}
           />
           <CoordIndicator
-            value={range.x.upper.toFixed(4)}
-            position={{right: -20, transform: [{rotate: '90deg'}]}}
+            value={fractalSettings.range.x.upper.toFixed(toFixedValue)}
+            rotate="90deg"
           />
           <CoordIndicator
-            value={range.x.lower.toFixed(4)}
-            position={{left: -23, transform: [{rotate: '270deg'}]}}
+            value={fractalSettings.range.x.lower.toFixed(toFixedValue)}
+            rotate="270deg"
           />
           <CoordIndicator
-            value={range.y.lower.toFixed(4) + 'i'}
-            position={{bottom: 0}}
+            value={fractalSettings.range.y.lower.toFixed(toFixedValue) + 'i'}
+            rotate="180deg"
           />
+          {loading && (
+            <View style={styles.loading}>
+              <ActivityIndicator
+                animating
+                color={Colors.white}
+                size={'large'}
+              />
+            </View>
+          )}
         </View>
       </View>
       <View style={styles.section}>
@@ -125,16 +151,20 @@ export function HomeScreen({navigation}: Props) {
         <Button
           color={Colors.maroon}
           onPress={() => {
-            if (juliaSetValue) {
-              setJuliaSetValue(null);
-              setRange(INIT_RANGE);
+            if (fractalSettings.juliaSetValue) {
+              setFractalSettings({
+                range: INIT_RANGE,
+                juliaSetValue: null,
+              });
             } else {
-              setJuliaSetValue(complex);
-              setRange(INIT_JULIA_SET_RANGE);
+              setFractalSettings({
+                range: INIT_JULIA_SET_RANGE,
+                juliaSetValue: complex,
+              });
             }
           }}
           text={
-            juliaSetValue
+            fractalSettings.juliaSetValue
               ? 'Back to mandelbrot set'
               : 'Show Julia set for these values'
           }
@@ -183,5 +213,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  loading: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });
