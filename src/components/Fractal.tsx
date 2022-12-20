@@ -23,7 +23,7 @@ function FractalComponent({
   const handleCanvas = async (canvas: Canvas) => {
     if (canvas) {
       setLoading(true);
-      await new Promise((r: any) => setTimeout(r, 50));
+      await new Promise((r: any) => setTimeout(r, 0));
       const context = canvas.getContext('2d');
       canvas.width = pixels;
       canvas.height = pixels;

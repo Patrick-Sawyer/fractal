@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -35,9 +35,6 @@ export function Button({
   };
 
   const onPressOut = () => {
-    if (disabled) {
-      return;
-    }
     setTimeout(() => {
       setPressed(false);
     }, 300);
@@ -66,11 +63,7 @@ export function Button({
           ]}>
           <Text
             numberOfLines={1}
-            style={[
-              styles.text,
-              pressed && styles.translucent,
-              disabled && {opacity: 0.2},
-            ]}>
+            style={[styles.text, pressed && styles.translucent]}>
             {text}
           </Text>
         </View>
