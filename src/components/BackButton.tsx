@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, ButtonWrapper} from './Button';
+import {Button} from './Button';
 
 interface Props {
   navigation: any;
@@ -7,12 +7,10 @@ interface Props {
 
 export function BackButton({navigation}: Props) {
   return (
-    <ButtonWrapper>
-      <Button
-        transparent
-        text="Back"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </ButtonWrapper>
+    <Button
+      transparent
+      text="Back"
+      onPress={() => navigation.navigate('Home')}
+    />
   );
 }

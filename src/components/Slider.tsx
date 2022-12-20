@@ -67,14 +67,14 @@ const limit = (value: number) => {
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
-    height: 20,
+    height: 40,
     paddingHorizontal: 10,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
   responder: {
-    height: 20,
+    height: 40,
     width: '100%',
     display: 'flex',
     alignItems: 'center',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     width: SLIDER_WIDTH,
     borderRadius: SLIDER_WIDTH / 2,
     position: 'absolute',
-    top: 0,
+    top: 10,
     borderWidth: 2,
     borderColor: Colors.yellow,
     shadowColor: Colors.yellow,

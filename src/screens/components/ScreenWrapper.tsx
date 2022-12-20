@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {BackButton} from '../../components/BackButton';
 
 interface Props {
@@ -9,23 +10,17 @@ interface Props {
 
 export function ScreenWrapper({navigation, children}: Props) {
   return (
-    <View style={styles.container}>
-      <View style={styles.main}>{children}</View>
-      <BackButton navigation={navigation} />
-    </View>
+    <ScrollView contentContainerStyle={styles.wrapper}>
+      <>
+        {children}
+        <BackButton navigation={navigation} />
+      </>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'space-between',
-    height: '100%',
-    alignItems: 'center',
-    width: '100%',
-  },
-  main: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    width: '100%',
+  wrapper: {
+    paddingBottom: 10,
   },
 });

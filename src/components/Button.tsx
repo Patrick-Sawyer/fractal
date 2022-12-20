@@ -72,14 +72,6 @@ export function Button({
   );
 }
 
-interface ButtonWrapperProps {
-  children: JSX.Element;
-}
-
-export const ButtonWrapper = ({children}: ButtonWrapperProps) => {
-  return <View style={styles.buttonWrapper}>{children}</View>;
-};
-
 const styles = StyleSheet.create({
   text: {
     color: 'rgba(255,255,255,0.9)',
@@ -90,21 +82,16 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 45,
-    paddingBottom: 10,
+    paddingBottom: 3,
   },
   inner: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 2,
+    borderRadius: 1,
   },
   translucent: {
     color: 'rgba(0,0,0,0.4)',
-  },
-  buttonWrapper: {
-    paddingHorizontal: 10,
-    paddingBottom: 15,
-    width: '100%',
   },
   shadow: {
     elevation: 4,
