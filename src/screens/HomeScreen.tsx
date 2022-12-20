@@ -7,11 +7,17 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
 import {CoordIndicator} from '../components/CoordIndicator';
 import {Fractal} from '../components/Fractal';
+import {Slider} from '../components/Slider';
 import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
+
+const MIN_SENSITIVITY = 10;
+const MAX_SENSITIVITY = 250;
+const SENSITIVITY_INIT_VALUE = 75;
 
 interface Props {
   navigation: any;
@@ -42,15 +48,16 @@ const INIT_JULIA_SET_RANGE = {
 interface FractalSettings {
   juliaSetValue: Complex | null;
   range: Range;
+  sensitivity: number;
 }
 
 const calcToFixedValue = ({range}: FractalSettings): number => {
   const {upper, lower} = range.x;
   const diff = upper - lower;
-  let blah = diff * 10000;
+  let blah = diff * 1000;
   let result = 4;
 
-  while (blah < 1 && result < 10) {
+  while (blah < 1 && result < 15) {
     blah = blah * 10;
     result++;
   }
@@ -64,9 +71,11 @@ export function HomeScreen({navigation}: Props) {
   const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
     range: INIT_RANGE,
     juliaSetValue: null,
+    sensitivity: SENSITIVITY_INIT_VALUE,
   });
   const [loading, setLoading] = useState(true);
   const toFixedValue = calcToFixedValue(fractalSettings);
+  const [sensitivity, setSensitivity] = useState(SENSITIVITY_INIT_VALUE);
 
   const onPressFractal = (e: GestureResponderEvent) => {
     const {locationX, locationY} = e.nativeEvent;
@@ -94,25 +103,41 @@ export function HomeScreen({navigation}: Props) {
       },
     };
 
+    settings.sensitivity = sensitivity;
+
     setFractalSettings(settings);
   };
 
+  const handleSlider = (input: number) => {
+    const adjusted = 1 - Math.pow(1 - input, 0.5);
+    const value =
+      adjusted * (MAX_SENSITIVITY - MIN_SENSITIVITY) + MIN_SENSITIVITY;
+    setSensitivity(Math.round(value));
+  };
+
   return (
-    <View style={styles.wrapper}>
+    <ScrollView
+      style={styles.scrollWrapper}
+      contentContainerStyle={styles.wrapper}>
       <View style={styles.section}>
         <View style={styles.textRow}>
-          <Text style={styles.text}>{'Real:'}</Text>
+          <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
           <Text style={styles.text}>{complex.real.toFixed(6)}</Text>
         </View>
         <View style={styles.textRow}>
-          <Text style={styles.text}>{'Imaginary:'}</Text>
+          <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
           <Text style={styles.text}>{complex.imaginary.toFixed(6)}</Text>
         </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>
+            {'Maximum iterations:'}
+          </Text>
+          <Text style={styles.text}>{sensitivity}</Text>
+        </View>
+        <Slider onChange={handleSlider} initValue={SENSITIVITY_INIT_VALUE} />
       </View>
       <View
         onTouchStart={onPressFractal}
-        onTouchEnd={onPressFractal}
-        onTouchMove={onPressFractal}
         style={[styles.fractal, {height: size, width: size}]}>
         <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
         <View style={styles.ranges} pointerEvents="none">
@@ -130,6 +155,7 @@ export function HomeScreen({navigation}: Props) {
           <CoordIndicator
             value={fractalSettings.range.y.lower.toFixed(toFixedValue) + 'i'}
             rotate="180deg"
+            flip
           />
           {loading && (
             <View style={styles.loading}>
@@ -144,22 +170,41 @@ export function HomeScreen({navigation}: Props) {
       </View>
       <View style={styles.section}>
         <Button
-          text={'Zoom into this coord'}
-          onPress={zoom}
+          text={'Re render'}
+          disabled={loading}
+          onPress={() => {
+            const {range, juliaSetValue} = fractalSettings;
+
+            setFractalSettings({
+              range,
+              juliaSetValue,
+              sensitivity,
+            });
+          }}
           color={Colors.orange}
         />
         <Button
+          text={'Zoom into this coord'}
+          onPress={zoom}
+          color={Colors.red}
+          disabled={loading}
+        />
+        <Button
           color={Colors.maroon}
+          disabled={loading}
           onPress={() => {
-            if (fractalSettings.juliaSetValue) {
+            const {juliaSetValue} = fractalSettings;
+            if (juliaSetValue) {
               setFractalSettings({
                 range: INIT_RANGE,
                 juliaSetValue: null,
+                sensitivity,
               });
             } else {
               setFractalSettings({
                 range: INIT_JULIA_SET_RANGE,
                 juliaSetValue: complex,
+                sensitivity,
               });
             }
           }}
@@ -174,27 +219,31 @@ export function HomeScreen({navigation}: Props) {
           onPress={() => {
             navigation.navigate('Explainer');
           }}
+          disabled={loading}
           color={Colors.purple}
           text={'What is a fractal?'}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingTop: 10,
     flexGrow: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   text: {
     color: Colors.white,
-    fontWeight: '600',
+    fontWeight: '400',
     fontSize: 16,
     paddingHorizontal: 10,
     paddingBottom: 10,
     fontVariant: ['tabular-nums'],
+    opacity: 0.9,
+  },
+  light: {
+    opacity: 0.5,
   },
   textRow: {
     justifyContent: 'space-between',
@@ -203,9 +252,12 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 10,
     paddingTop: 10,
+    flexGrow: 1,
+    justifyContent: 'space-evenly',
   },
   fractal: {
-    backgroundColor: Colors.blackish,
+    marginTop: 15,
+    backgroundColor: 'black',
   },
   ranges: {
     height: '100%',
@@ -225,5 +277,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  scrollWrapper: {
+    flexGrow: 1,
   },
 });

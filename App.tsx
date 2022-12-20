@@ -37,7 +37,6 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: Colors.blackish,
-    border: '1px solid red',
     height: '100%',
   },
 });

@@ -5,12 +5,15 @@ import {Colors} from '../theme/theme';
 interface Props {
   value: string | number;
   rotate?: '90deg' | '180deg' | '270deg';
+  flip?: boolean;
 }
 
-export function CoordIndicator({value, rotate}: Props) {
+export function CoordIndicator({value, rotate, flip}: Props) {
   return (
     <View style={[styles.wrapper, !!rotate && {transform: [{rotate}]}]}>
-      <Text style={[styles.text]}>{value}</Text>
+      <Text style={[styles.text, flip && {transform: [{rotate: '180deg'}]}]}>
+        {value}
+      </Text>
     </View>
   );
 }

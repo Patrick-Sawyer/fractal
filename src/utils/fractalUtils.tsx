@@ -23,9 +23,8 @@ export interface Coord {
   y: number;
 }
 
-const BLACK = [0, 0, 0, 255];
+const BLACK = [0, 0, 0];
 const MAX_NUMBER = 3;
-const SENSITIVITY = 30;
 
 const CENTRE: Complex = {
   real: 0,
@@ -62,20 +61,32 @@ const YELLOW = {
 
 const COLORS: Color[] = [YELLOW, ORANGE, RED, MAROON, PURPLE];
 
-const getColorFromValue = (_: null, index: number) => {
-  const valueAsFraction = index / SENSITIVITY;
-  const positionInColors = valueAsFraction * (COLORS.length - 1);
-  const lowerColorIndex = Math.floor(positionInColors);
-  const valueInRange = positionInColors - lowerColorIndex;
-  const color1 = COLORS[lowerColorIndex];
-  const color2 = COLORS[lowerColorIndex + 1];
-  const red = Math.round((color2.r - color1.r) * valueInRange + color1.r);
-  const green = Math.round((color2.g - color1.g) * valueInRange + color1.g);
-  const blue = Math.round((color2.b - color1.b) * valueInRange + color1.b);
-  return [red, green, blue];
-};
+const oldColorMaps: Record<number, number[][]> = {};
 
-const COLOR_MAPPER = new Array(SENSITIVITY).fill(null).map(getColorFromValue);
+const createColorMap = (maxIterations: number) => {
+  if (oldColorMaps[maxIterations]) {
+    return oldColorMaps[maxIterations];
+  }
+
+  const map = new Array(maxIterations)
+    .fill(null)
+    .map((_: null, index: number) => {
+      const valueAsFraction = index / maxIterations;
+      const positionInColors = valueAsFraction * (COLORS.length - 1);
+      const lowerColorIndex = Math.floor(positionInColors);
+      const valueInRange = positionInColors - lowerColorIndex;
+      const color1 = COLORS[lowerColorIndex];
+      const color2 = COLORS[lowerColorIndex + 1];
+      const red = Math.round((color2.r - color1.r) * valueInRange + color1.r);
+      const green = Math.round((color2.g - color1.g) * valueInRange + color1.g);
+      const blue = Math.round((color2.b - color1.b) * valueInRange + color1.b);
+      return [red, green, blue];
+    });
+
+  oldColorMaps[maxIterations] = map;
+
+  return map;
+};
 
 export const ComplexMaths: ComplexMathsType = {
   add: (a, b) => ({
@@ -110,12 +121,14 @@ export const getCoord = (
 const hasHitMax = (x: Complex): boolean =>
   Math.abs(x.real) > MAX_NUMBER || Math.abs(x.imaginary) > MAX_NUMBER;
 
-export const getFractalNew = (
+export const getFractal = (
   size: number,
   range: Range,
   juliaSetValue: Complex | null,
+  maxIterations = 30,
 ): number[] => {
   const data: number[] = new Array(size * size * 4).fill(255);
+  const COLOR_MAPPER = createColorMap(maxIterations);
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -124,7 +137,7 @@ export const getFractalNew = (
       const initCoord = getCoord(size, range, {x, y});
       let iteration = juliaSetValue ? initCoord : CENTRE;
 
-      for (let i = 0; i < SENSITIVITY - 1; i++) {
+      for (let i = 0; i < maxIterations - 1; i++) {
         const square = ComplexMaths.square(iteration);
         iteration = ComplexMaths.add(square, juliaSetValue || initCoord);
 

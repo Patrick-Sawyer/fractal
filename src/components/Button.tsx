@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ interface Props {
   onPress?: () => void;
   transparent?: boolean;
   color?: string;
+  disabled?: boolean;
 }
 
 export function Button({
@@ -21,16 +22,25 @@ export function Button({
   onPress,
   transparent = false,
   color = Colors.orange,
+  disabled = false,
 }: Props) {
   const [pressed, setPressed] = useState(false);
 
   const onPressIn = () => {
+    if (disabled) {
+      return;
+    }
+    onPress && onPress();
     setPressed(true);
   };
 
   const onPressOut = () => {
-    setPressed(false);
-    onPress && onPress();
+    if (disabled) {
+      return;
+    }
+    setTimeout(() => {
+      setPressed(false);
+    }, 300);
   };
 
   return (
@@ -49,11 +59,18 @@ export function Button({
               styles.shadow && {
                 backgroundColor: color,
               },
-            pressed && (Platform.OS === 'ios' || !transparent) && styles.grey,
+            pressed &&
+              (Platform.OS === 'ios' || !transparent) && {
+                backgroundColor: 'rgba(0,0,0,0.1)',
+              },
           ]}>
           <Text
             numberOfLines={1}
-            style={[styles.text, pressed && styles.translucent]}>
+            style={[
+              styles.text,
+              pressed && styles.translucent,
+              disabled && {opacity: 0.2},
+            ]}>
             {text}
           </Text>
         </View>
@@ -72,14 +89,14 @@ export const ButtonWrapper = ({children}: ButtonWrapperProps) => {
 
 const styles = StyleSheet.create({
   text: {
-    color: Colors.white,
-    fontSize: 15,
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 14,
     fontWeight: '500',
     paddingHorizontal: 10,
   },
   container: {
     width: '100%',
-    height: 50,
+    height: 45,
     paddingBottom: 10,
   },
   inner: {
@@ -90,10 +107,6 @@ const styles = StyleSheet.create({
   },
   translucent: {
     color: 'rgba(0,0,0,0.4)',
-  },
-  grey: {
-    backgroundColor: Colors.darkishGrey,
-    opacity: 0.5,
   },
   buttonWrapper: {
     paddingHorizontal: 10,
