@@ -12,14 +12,40 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
 import {CoordIndicator} from '../components/CoordIndicator';
-import {Fractal} from '../components/Fractal';
+// import {Fractal} from '../components/Fractal';
 import {Slider} from '../components/Slider';
 import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
 
-const {FractalModule, ComplexMathsModule} = NativeModules;
+const {FractalModule} = NativeModules;
 
-console.log(ComplexMathsModule, FractalModule);
+const range = {
+  x: {
+    upper: 0.2342345,
+    lower: 1.234346456745,
+  },
+  y: {
+    upper: 0.246735637,
+    lower: 1.56756735683,
+  },
+};
+
+const juliaSetValue = {
+  real: -1.24534363456,
+  imaginary: 0.135432643656,
+};
+
+const blahblah = async () => {
+  const result = await FractalModule.getFractal(
+    3333,
+    JSON.stringify(range),
+    JSON.stringify(juliaSetValue),
+    100,
+  );
+  console.log(result);
+};
+
+blahblah();
 
 const MIN_SENSITIVITY = 10;
 const MAX_SENSITIVITY = 250;
@@ -73,7 +99,7 @@ const calcToFixedValue = ({range}: FractalSettings): number => {
 
 export function HomeScreen({navigation}: Props) {
   const size = useWindowDimensions().width;
-  const [renderFractal, setRenderFractal] = useState(false);
+  const [, setRenderFractal] = useState(false);
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
   const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
     range: INIT_RANGE,
@@ -133,9 +159,9 @@ export function HomeScreen({navigation}: Props) {
       <View
         onTouchStart={onPressFractal}
         style={[styles.fractal, {height: size, width: size}]}>
-        {renderFractal && (
+        {/* {renderFractal && (
           <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
-        )}
+        )} */}
         <View style={styles.ranges} pointerEvents="none">
           <CoordIndicator
             value={fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'}

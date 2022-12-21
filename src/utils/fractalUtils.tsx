@@ -88,7 +88,7 @@ const createColorMap = (maxIterations: number) => {
   return map;
 };
 
-export const ComplexMaths: ComplexMathsType = {
+const ComplexMaths: ComplexMathsType = {
   add: (a, b) => ({
     real: a.real + b.real,
     imaginary: a.imaginary + b.imaginary,
