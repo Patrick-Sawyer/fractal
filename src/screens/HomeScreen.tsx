@@ -17,9 +17,9 @@ import {Slider} from '../components/Slider';
 import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
 
-const {FractalModule} = NativeModules;
+const {FractalModule, ComplexMathsModule} = NativeModules;
 
-console.log(FractalModule);
+console.log(ComplexMathsModule, FractalModule);
 
 const MIN_SENSITIVITY = 10;
 const MAX_SENSITIVITY = 250;

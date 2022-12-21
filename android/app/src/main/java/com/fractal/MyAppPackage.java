@@ -21,6 +21,7 @@ public class MyAppPackage implements ReactPackage {
        List<NativeModule> modules = new ArrayList<>();
 
        modules.add(new FractalModule(reactContext));
+       modules.add(new ComplexMathsModule(reactContext));
 
        return modules;
    }
