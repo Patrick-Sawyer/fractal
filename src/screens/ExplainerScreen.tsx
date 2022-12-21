@@ -34,7 +34,12 @@ export function ExplainerScreen({navigation}: Props) {
         <Text style={[styles.text, styles.large]}>{'Complex Maths'}</Text>
         <Text style={styles.text}>
           {
-            'For fractals, we are only interested in addition and multiplication. To add 2 complex numbers, you simply add the real parts and imaginary parts of each complex number.'
+            'For fractals, we are only interested in addition and multiplication. '
+          }
+        </Text>
+        <Text style={styles.text}>
+          {
+            'To add 2 complex numbers, you simply add the real parts and imaginary parts of each complex number.'
           }
         </Text>
         <Text style={[styles.text, styles.example]}>{'a = 1 + 2i'}</Text>
@@ -166,8 +171,9 @@ const styles = StyleSheet.create({
   },
   equation: {
     flexDirection: 'row',
-    alignItems: 'center',
+    width: '100%',
     height: 20,
+    justifyContent: 'center',
     paddingLeft: 10,
     marginBottom: 10,
   },
@@ -195,7 +201,6 @@ const styles = StyleSheet.create({
     color: Colors.lightGrey,
     fontWeight: '700',
     fontSize: 14,
-    width: '100%',
     textAlign: 'center',
   },
 });
