@@ -10,7 +10,9 @@ interface Props {
 
 export function ScreenWrapper({navigation, children}: Props) {
   return (
-    <ScrollView contentContainerStyle={styles.wrapper}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.wrapper}>
       <>
         {children}
         <BackButton navigation={navigation} />
@@ -21,6 +23,6 @@ export function ScreenWrapper({navigation, children}: Props) {
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingBottom: 10,
+    padding: 10,
   },
 });

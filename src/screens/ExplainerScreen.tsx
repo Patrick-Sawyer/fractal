@@ -160,7 +160,6 @@ export function ExplainerScreen({navigation}: Props) {
 const styles = StyleSheet.create({
   wrapper: {
     paddingTop: 15,
-    paddingHorizontal: 10,
   },
   bottomText: {
     position: 'relative',

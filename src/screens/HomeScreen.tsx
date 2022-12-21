@@ -7,6 +7,7 @@ import {
   Text,
   useWindowDimensions,
   View,
+  NativeModules,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
@@ -15,6 +16,10 @@ import {Fractal} from '../components/Fractal';
 import {Slider} from '../components/Slider';
 import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
+
+const {FractalModule} = NativeModules;
+
+console.log(FractalModule);
 
 const MIN_SENSITIVITY = 10;
 const MAX_SENSITIVITY = 250;
@@ -124,7 +129,7 @@ export function HomeScreen({navigation}: Props) {
   }, []);
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View
         onTouchStart={onPressFractal}
         style={[styles.fractal, {height: size, width: size}]}>
