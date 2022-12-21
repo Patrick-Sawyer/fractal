@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableNativeFeedback,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 
 import {Colors} from '../theme/theme';
@@ -15,6 +16,7 @@ interface Props {
   transparent?: boolean;
   color?: string;
   disabled?: boolean;
+  textColor?: string;
 }
 
 export function Button({
@@ -23,18 +25,17 @@ export function Button({
   transparent = false,
   color = Colors.orange,
   disabled = false,
+  textColor,
 }: Props) {
   const [pressed, setPressed] = useState(false);
 
-  const onPressIn = () => {
+  const onClick = () => {
     if (disabled) {
       return;
     }
     onPress && onPress();
     setPressed(true);
-  };
 
-  const onPressOut = () => {
     setTimeout(() => {
       setPressed(false);
     }, 300);
@@ -47,8 +48,7 @@ export function Button({
           'rgba(255,255,255,0.1)',
           false,
         )}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}>
+        onPress={onClick}>
         <View
           style={[
             styles.inner,
@@ -61,11 +61,15 @@ export function Button({
                 backgroundColor: 'rgba(0,0,0,0.1)',
               },
           ]}>
-          <Text
-            numberOfLines={1}
-            style={[styles.text, pressed && styles.translucent]}>
-            {text}
-          </Text>
+          {pressed ? (
+            <ActivityIndicator size="small" animating color="white" />
+          ) : (
+            <Text
+              numberOfLines={1}
+              style={[styles.text, !!textColor && {color: textColor}]}>
+              {text}
+            </Text>
+          )}
         </View>
       </TouchableNativeFeedback>
     </View>
@@ -82,16 +86,12 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 45,
-    paddingBottom: 3,
+    paddingBottom: 5,
   },
   inner: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 1,
-  },
-  translucent: {
-    color: 'rgba(0,0,0,0.4)',
   },
   shadow: {
     elevation: 4,

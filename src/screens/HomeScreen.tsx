@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Dimensions,
   GestureResponderEvent,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
 import {CoordIndicator} from '../components/CoordIndicator';
 import {Fractal} from '../components/Fractal';
@@ -66,6 +68,7 @@ const calcToFixedValue = ({range}: FractalSettings): number => {
 
 export function HomeScreen({navigation}: Props) {
   const size = useWindowDimensions().width;
+  const [renderFractal, setRenderFractal] = useState(false);
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
   const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
     range: INIT_RANGE,
@@ -114,14 +117,20 @@ export function HomeScreen({navigation}: Props) {
     setSensitivity(Math.round(value));
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      setRenderFractal(true);
+    }, 500);
+  }, []);
+
   return (
-    <>
+    <ScrollView>
       <View
         onTouchStart={onPressFractal}
-        onTouchEnd={onPressFractal}
-        onTouchMove={onPressFractal}
         style={[styles.fractal, {height: size, width: size}]}>
-        <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
+        {renderFractal && (
+          <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
+        )}
         <View style={styles.ranges} pointerEvents="none">
           <CoordIndicator
             value={fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'}
@@ -156,11 +165,11 @@ export function HomeScreen({navigation}: Props) {
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
-          <Text style={styles.text}>{complex.real.toFixed(6)}</Text>
+          <Text style={styles.text}>{complex.real.toFixed(10)}</Text>
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
-          <Text style={styles.text}>{complex.imaginary.toFixed(6)}</Text>
+          <Text style={styles.text}>{complex.imaginary.toFixed(10)}</Text>
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.large]}>{'Iterations'}</Text>
@@ -212,6 +221,7 @@ export function HomeScreen({navigation}: Props) {
                 sensitivity,
               });
             }
+            setComplex({real: 0, imaginary: 0});
           }}
           text={
             fractalSettings.juliaSetValue
@@ -229,7 +239,7 @@ export function HomeScreen({navigation}: Props) {
           text={'What is a fractal?'}
         />
       </View>
-    </>
+    </ScrollView>
   );
 }
 
@@ -238,7 +248,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '400',
     fontSize: 15,
-    paddingHorizontal: 10,
     paddingBottom: 10,
     fontVariant: ['tabular-nums'],
     opacity: 0.9,
@@ -255,6 +264,7 @@ const styles = StyleSheet.create({
   },
   fractal: {
     backgroundColor: 'black',
+    height: Dimensions.get('window').width,
   },
   ranges: {
     height: '100%',
@@ -281,6 +291,7 @@ const styles = StyleSheet.create({
   },
   large: {
     fontSize: 19,
-    fontWeight: '500',
+    fontWeight: '400',
+    marginTop: 10,
   },
 });

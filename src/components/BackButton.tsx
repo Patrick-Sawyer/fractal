@@ -1,4 +1,5 @@
 import React from 'react';
+import {Colors} from '../theme/theme';
 import {Button} from './Button';
 
 interface Props {
@@ -9,6 +10,7 @@ export function BackButton({navigation}: Props) {
   return (
     <Button
       transparent
+      textColor={Colors.orange}
       text="Back"
       onPress={() => navigation.navigate('Home')}
     />

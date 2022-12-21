@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {Colors} from '../theme/theme';
 
-const SLIDER_WIDTH = 20;
+const SLIDER_WIDTH = 16;
 
 interface Props {
   onChange?: (value: number) => void;
@@ -83,24 +83,15 @@ const styles = StyleSheet.create({
   track: {
     width: '100%',
     height: 6,
-    backgroundColor: Colors.blackish,
+    backgroundColor: 'black',
     borderRadius: 3,
   },
   slider: {
-    backgroundColor: Colors.red,
+    backgroundColor: Colors.white,
     height: SLIDER_WIDTH,
     width: SLIDER_WIDTH,
     borderRadius: SLIDER_WIDTH / 2,
     position: 'absolute',
-    top: 10,
-    borderWidth: 2,
-    borderColor: Colors.yellow,
-    shadowColor: Colors.yellow,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 2.62,
+    top: 12,
   },
 });

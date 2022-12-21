@@ -24,14 +24,14 @@ export function ExplainerScreen({navigation}: Props) {
           }
         </Text>
         <Text style={[styles.text, styles.example]}>{'a = 5i'}</Text>
-        <Text style={[styles.text, styles.large]}>{'Complex numbers'}</Text>
+        <Text style={[styles.text, styles.large]}>{'Complex Numbers'}</Text>
         <Text style={styles.text}>
           {
             'Complex numbers are numbers containing both real and imaginary numbers. They are written as below.'
           }
         </Text>
         <Text style={[styles.text, styles.example]}>{'a = 7 + 4i'}</Text>
-        <Text style={[styles.text, styles.large]}>{'Complex maths'}</Text>
+        <Text style={[styles.text, styles.large]}>{'Complex Maths'}</Text>
         <Text style={styles.text}>
           {
             'For fractals, we are only interested in addition and multiplication. To add 2 complex numbers, you simply add the real parts and imaginary parts of each complex number.'
@@ -57,7 +57,7 @@ export function ExplainerScreen({navigation}: Props) {
           {'a x b = 6 + 4i + 3i + -2'}
         </Text>
         <Text style={[styles.text, styles.example]}>{'a x b = 4 + 7i'}</Text>
-        <Text style={[styles.text, styles.large]}>{'The complex plane'}</Text>
+        <Text style={[styles.text, styles.large]}>{'The Complex Plane'}</Text>
         <Text style={styles.text}>
           {
             'The complex plane is just a normal graph, but where each point is a complex number. The x axis represents the real part, and the y axis represents the imaginary part. For example, if the x coordinate is 3 and the y coordinate is -2 then the number it represents is as below.'
@@ -119,7 +119,7 @@ export function ExplainerScreen({navigation}: Props) {
             'All that means is for each coordinate, you get the complex number of that coordinate, square it and add the original complex number (which is called "c") and repeat. If it approaches infinity, you mark that point as white, if it does not you mark it black. Do this for every point on the complex plane and you get the Mandelbrot set.'
           }
         </Text>
-        <Text style={[styles.text, styles.large]}>{'Julia sets'}</Text>
+        <Text style={[styles.text, styles.large]}>{'Julia Sets'}</Text>
         <Text style={styles.text}>
           {
             'Julia sets are the same, although this time the value of "c" is different. There are many many Julia sets, all with a different complex number for the value of "c".'
@@ -131,7 +131,7 @@ export function ExplainerScreen({navigation}: Props) {
             "The only other factor here involves the speed at which these iterations reach infinity. Coordinates that don't ever reach infinity are marked as black. The ones that reach infinity quicker you apply a different colour to. In this app, coordinates that reach infinity quickest are marked as yellow. The darker the colour, the slower it gets to infinity."
           }
         </Text>
-        <Text style={[styles.text, styles.large]}>{'Other info'}</Text>
+        <Text style={[styles.text, styles.large]}>{'Other Info'}</Text>
         <Text style={styles.text}>
           {
             'Julia sets where the real and imaginary numbers that comprise c approach zero start looking like a circle. The Julia set where c is 0 + 0i is a perfect circle.'
@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   large: {
+    marginTop: 10,
     color: Colors.orange,
     fontWeight: 'bold',
     letterSpacing: 0.6,
@@ -191,7 +192,10 @@ const styles = StyleSheet.create({
   },
   example: {
     fontStyle: 'italic',
-    fontWeight: '600',
-    fontSize: 16,
+    color: Colors.lightGrey,
+    fontWeight: '700',
+    fontSize: 14,
+    width: '100%',
+    textAlign: 'center',
   },
 });
