@@ -21,7 +21,7 @@ const {FractalModule} = NativeModules;
 
 const range = {
   x: {
-    upper: 0.2342345,
+    upper: 0.2342452452345,
     lower: 1.234346456745,
   },
   y: {
@@ -37,10 +37,14 @@ const juliaSetValue = {
 
 const blahblah = async () => {
   const result = await FractalModule.getFractal(
-    3333,
-    JSON.stringify(range),
-    JSON.stringify(juliaSetValue),
-    100,
+    10,
+    range.x.upper,
+    range.x.lower,
+    range.y.upper,
+    range.y.lower,
+    juliaSetValue.real,
+    juliaSetValue.imaginary,
+    10,
   );
   console.log(result);
 };

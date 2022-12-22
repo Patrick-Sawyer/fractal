@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["nums", "Zoomable"]
+  "cSpell.words": ["nums", "Zoomable"],
+  "editor.defaultFormatter": "mwpb.java-prettier-formatter"
 }
