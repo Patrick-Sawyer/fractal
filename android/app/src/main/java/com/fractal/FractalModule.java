@@ -1,10 +1,11 @@
 package com.fractal;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableArray;
 import java.util.Arrays;
 
 public class FractalModule extends ReactContextBaseJavaModule {
@@ -100,8 +101,7 @@ public class FractalModule extends ReactContextBaseJavaModule {
       juliaSetValueImaginary
     );
 
-    int[] data = new int[size * size * 4];
-    Arrays.fill(data, 255);
+    WritableArray array = Arguments.createArray();
 
     for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
@@ -115,6 +115,7 @@ public class FractalModule extends ReactContextBaseJavaModule {
           iteration =
             Complex.add(square, isJuliaSet == true ? juliaSetValue : initCoord);
           boolean hasHitMax = this.hasHitMax(iteration);
+
           if (hasHitMax == true) {
             maxedOut = true;
             break;
@@ -123,13 +124,13 @@ public class FractalModule extends ReactContextBaseJavaModule {
           }
         }
 
-        int index = 4 * (y * size + x);
-        data[index + 0] = maxedOut == true ? colorMap[howFast].r : 0;
-        data[index + 1] = maxedOut == true ? colorMap[howFast].g : 0;
-        data[index + 2] = maxedOut == true ? colorMap[howFast].b : 0;
+        array.pushInt(maxedOut == true ? colorMap[howFast].r : 0);
+        array.pushInt(maxedOut == true ? colorMap[howFast].g : 0);
+        array.pushInt(maxedOut == true ? colorMap[howFast].b : 0);
+        array.pushInt(255);
       }
     }
 
-    promise.resolve(data);
+    promise.resolve(array);
   }
 }
