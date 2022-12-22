@@ -2,12 +2,10 @@ package com.fractal;
 
 public class Range {
 
-  double xUpper, xLower, yUpper, yLower;
+  AxisRange x, y;
 
   Range(double a, double b, double c, double d) {
-    xUpper = a;
-    xLower = b;
-    yUpper = c;
-    yLower = d;
+    x = new AxisRange(a, b);
+    y = new AxisRange(c, d);
   }
 }

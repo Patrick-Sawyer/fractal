@@ -42,9 +42,10 @@ const blahblah = async () => {
     range.x.lower,
     range.y.upper,
     range.y.lower,
-    juliaSetValue.real,
-    juliaSetValue.imaginary,
+    null,
+    null,
     10,
+    false,
   );
   console.log(result);
 };

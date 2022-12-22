@@ -5,8 +5,13 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import java.util.Arrays;
 
 public class FractalModule extends ReactContextBaseJavaModule {
+
+  Complex centre = new Complex(0, 0);
+  int maxNumber = 3;
+  int[] black = { 0, 0, 0 };
 
   FractalModule(ReactApplicationContext context) {
     super(context);
@@ -15,6 +20,30 @@ public class FractalModule extends ReactContextBaseJavaModule {
   @Override
   public String getName() {
     return "FractalModule";
+  }
+
+  private boolean hasHitMax(Complex x) {
+    return (
+      Math.abs(x.real) > this.maxNumber ||
+      Math.abs(x.imaginary) > this.maxNumber
+    );
+  }
+
+  private double getAxisPosition(AxisRange limits, int max, int position) {
+    double fraction = (double) position / (double) max;
+    double range = limits.upper - limits.lower;
+    return range * fraction + limits.lower;
+  }
+
+  private Complex getCoord(
+    int size,
+    Range range,
+    int xPosition,
+    int yPosition
+  ) {
+    double real = this.getAxisPosition(range.x, size, xPosition);
+    double imaginary = this.getAxisPosition(range.y, size, yPosition);
+    return new Complex(real, imaginary);
   }
 
   private Color[] getColorMap(int maxIterations) {
@@ -60,6 +89,7 @@ public class FractalModule extends ReactContextBaseJavaModule {
     double juliaSetValueReal,
     double juliaSetValueImaginary,
     int maxIterations,
+    boolean isJuliaSet,
     Promise promise
   ) {
     Range range = new Range(rangeXUpper, rangeXLower, rangeYUpper, rangeYLower);
@@ -70,6 +100,36 @@ public class FractalModule extends ReactContextBaseJavaModule {
       juliaSetValueImaginary
     );
 
-    promise.resolve("hello" + colorMap[0].r);
+    int[] data = new int[size * size * 4];
+    Arrays.fill(data, 255);
+
+    for (int y = 0; y < size; y++) {
+      for (int x = 0; x < size; x++) {
+        boolean maxedOut = false;
+        int howFast = 0;
+        Complex initCoord = getCoord(size, range, x, y);
+        Complex iteration = isJuliaSet == true ? centre : initCoord;
+
+        for (int i = 0; i < maxIterations - 1; i++) {
+          Complex square = Complex.square(iteration);
+          iteration =
+            Complex.add(square, isJuliaSet == true ? juliaSetValue : initCoord);
+          boolean hasHitMax = this.hasHitMax(iteration);
+          if (hasHitMax == true) {
+            maxedOut = true;
+            break;
+          } else {
+            howFast++;
+          }
+        }
+
+        int index = 4 * (y * size + x);
+        data[index + 0] = maxedOut == true ? colorMap[howFast].r : 0;
+        data[index + 1] = maxedOut == true ? colorMap[howFast].g : 0;
+        data[index + 2] = maxedOut == true ? colorMap[howFast].b : 0;
+      }
+    }
+
+    promise.resolve(data);
   }
 }
