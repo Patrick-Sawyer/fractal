@@ -25,7 +25,6 @@ function FractalComponent({
       setLoading(true);
       await new Promise((r: any) => setTimeout(r, 0));
       const context = canvas.getContext('2d');
-      console.log('pixels', pixels);
       canvas.width = pixels;
       canvas.height = pixels;
       const colorData = await getFractal(
@@ -34,7 +33,6 @@ function FractalComponent({
         juliaSetValue,
         sensitivity,
       );
-      console.log('colorDataLength', colorData.length);
       const data = new ImageData(canvas, colorData, pixels, pixels);
       context.putImageData(data, 0, 0);
       setLoading(false);

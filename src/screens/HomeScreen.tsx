@@ -160,31 +160,8 @@ export function HomeScreen({navigation}: Props) {
         </View>
       </View>
       <View style={styles.section}>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large]}>{'Coordinate'}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
-          <Text style={styles.text}>{complex.real.toFixed(10)}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
-          <Text style={styles.text}>{complex.imaginary.toFixed(10)}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large]}>{'Iterations'}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>
-            {'Maximum iterations:'}
-          </Text>
-          <Text style={styles.text}>{sensitivity}</Text>
-        </View>
-        <Slider onChange={handleSlider} initValue={SENSITIVITY_INIT_VALUE} />
-      </View>
-      <View style={styles.section}>
         <Button
-          text={'Re render'}
+          text={'Rerender'}
           disabled={loading}
           onPress={() => {
             const {range, juliaSetValue} = fractalSettings;
@@ -230,6 +207,33 @@ export function HomeScreen({navigation}: Props) {
           }
         />
 
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.large]}>{'Coordinate'}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
+          <Text style={styles.text}>{complex.real.toFixed(10)}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
+          <Text style={styles.text}>{complex.imaginary.toFixed(10)}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.large]}>{'Settings'}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>
+            {'Maximum iterations per pixel:'}
+          </Text>
+          <Text style={styles.text}>{sensitivity}</Text>
+        </View>
+        <Slider
+          onChange={handleSlider}
+          initValue={SENSITIVITY_INIT_VALUE}
+          maxValue={MAX_SENSITIVITY}
+        />
+      </View>
+      <View style={styles.section}>
         <Button
           onPress={() => {
             navigation.navigate('Explainer');
@@ -260,7 +264,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   section: {
-    padding: 10,
+    padding: 8,
   },
   fractal: {
     backgroundColor: 'black',

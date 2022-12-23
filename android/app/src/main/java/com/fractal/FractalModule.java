@@ -10,9 +10,7 @@ import java.util.Arrays;
 
 public class FractalModule extends ReactContextBaseJavaModule {
 
-  Complex centre = new Complex(0, 0);
   int maxNumber = 3;
-  int[] black = { 0, 0, 0 };
 
   FractalModule(ReactApplicationContext context) {
     super(context);
@@ -25,8 +23,12 @@ public class FractalModule extends ReactContextBaseJavaModule {
 
   private boolean hasHitMax(Complex x) {
     return (
-      Math.abs(x.real) > this.maxNumber ||
-      Math.abs(x.imaginary) > this.maxNumber
+      x.real *
+      x.real +
+      x.imaginary *
+      x.imaginary >
+      this.maxNumber *
+      this.maxNumber
     );
   }
 
@@ -47,39 +49,6 @@ public class FractalModule extends ReactContextBaseJavaModule {
     return new Complex(real, imaginary);
   }
 
-  private Color[] getColorMap(int maxIterations) {
-    Color[] colors = new Color[] {
-      new Color(255, 195, 15),
-      new Color(255, 88, 51),
-      new Color(199, 0, 57),
-      new Color(144, 12, 63),
-      new Color(88, 24, 69),
-    };
-
-    Color[] colorMap = new Color[maxIterations];
-
-    for (int index = 0; index < maxIterations; index++) {
-      double valueAsFraction = (double) index / (double) maxIterations;
-      double positionInColors = valueAsFraction * (double) (colors.length - 1);
-      int lowerColorIndex = (int) Math.floor(positionInColors);
-      double valueInRange = positionInColors - (double) lowerColorIndex;
-      Color color1 = colors[lowerColorIndex];
-      Color color2 = colors[lowerColorIndex + 1];
-      int red = (int) Math.round(
-        (double) (color2.r - color1.r) * valueInRange + (double) color1.r
-      );
-      int green = (int) Math.round(
-        (double) (color2.g - color1.g) * valueInRange + (double) color1.g
-      );
-      int blue = (int) Math.round(
-        (double) (color2.b - color1.b) * valueInRange + (double) color1.b
-      );
-      colorMap[index] = new Color(red, green, blue);
-    }
-
-    return colorMap;
-  }
-
   @ReactMethod
   public void getFractal(
     int size,
@@ -94,7 +63,7 @@ public class FractalModule extends ReactContextBaseJavaModule {
     Promise promise
   ) {
     Range range = new Range(rangeXUpper, rangeXLower, rangeYUpper, rangeYLower);
-    Color[] colorMap = this.getColorMap(maxIterations);
+    Color[] colorMap = Color.getColorMap(maxIterations);
 
     Complex juliaSetValue = new Complex(
       juliaSetValueReal,
@@ -103,17 +72,20 @@ public class FractalModule extends ReactContextBaseJavaModule {
 
     WritableArray array = Arguments.createArray();
 
-    for (int y = 0; y < size; y++) {
+    for (int y = size; y > 0; y--) {
       for (int x = 0; x < size; x++) {
         boolean maxedOut = false;
         int howFast = 0;
         Complex initCoord = getCoord(size, range, x, y);
-        Complex iteration = isJuliaSet == true ? centre : initCoord;
+        Complex iteration = initCoord;
 
         for (int i = 0; i < maxIterations - 1; i++) {
           Complex square = Complex.square(iteration);
           iteration =
-            Complex.add(square, isJuliaSet == true ? juliaSetValue : initCoord);
+            Complex.add(
+              square,
+              (isJuliaSet == true) ? juliaSetValue : initCoord
+            );
           boolean hasHitMax = this.hasHitMax(iteration);
 
           if (hasHitMax == true) {
@@ -124,9 +96,9 @@ public class FractalModule extends ReactContextBaseJavaModule {
           }
         }
 
-        array.pushInt(maxedOut == true ? colorMap[howFast].r : 0);
-        array.pushInt(maxedOut == true ? colorMap[howFast].g : 0);
-        array.pushInt(maxedOut == true ? colorMap[howFast].b : 0);
+        array.pushInt(maxedOut == true ? colorMap[howFast].red : 0);
+        array.pushInt(maxedOut == true ? colorMap[howFast].green : 0);
+        array.pushInt(maxedOut == true ? colorMap[howFast].blue : 0);
         array.pushInt(255);
       }
     }

@@ -86,12 +86,13 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 45,
-    paddingBottom: 5,
+    paddingBottom: 8,
   },
   inner: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 1,
   },
   shadow: {
     elevation: 4,

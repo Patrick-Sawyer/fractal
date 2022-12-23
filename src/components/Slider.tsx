@@ -13,23 +13,26 @@ const SLIDER_WIDTH = 16;
 interface Props {
   onChange?: (value: number) => void;
   initValue?: number;
+  maxValue: number;
 }
 
-export function Slider({onChange, initValue = 0}: Props) {
-  const anim = useRef(new Animated.Value(initValue)).current;
+export function Slider({onChange, initValue = 0, maxValue}: Props) {
+  const anim = useRef<Animated.Value | null>(null);
   const width = useRef<number>();
 
   const onLayout = (e: LayoutChangeEvent) => {
-    width.current = e.nativeEvent.layout.width;
+    const totalWidth = e.nativeEvent.layout.width;
+    width.current = totalWidth;
+    anim.current = new Animated.Value((totalWidth * initValue) / maxValue);
   };
 
   const onSlide = (e: GestureResponderEvent) => {
     if (width.current) {
       const position = e.nativeEvent.locationX;
       const fraction = limit(position / width.current);
-      onChange && onChange(fraction);
       const value = fraction * width.current - SLIDER_WIDTH / 2;
-      anim.setValue(value);
+      anim.current?.setValue(value);
+      onChange && onChange(fraction);
     }
   };
 
@@ -43,10 +46,12 @@ export function Slider({onChange, initValue = 0}: Props) {
         onResponderEnd={onSlide}
         style={styles.responder}>
         <View pointerEvents="none" style={styles.track} />
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.slider, {left: anim}]}
-        />
+        {anim.current && (
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.slider, {left: anim.current}]}
+          />
+        )}
       </View>
     </View>
   );

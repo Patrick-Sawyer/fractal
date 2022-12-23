@@ -4,8 +4,8 @@ public class Range {
 
   AxisRange x, y;
 
-  Range(double a, double b, double c, double d) {
-    x = new AxisRange(a, b);
-    y = new AxisRange(c, d);
+  Range(double xUpper, double xLower, double yUpper, double yLower) {
+    x = new AxisRange(xUpper, xLower);
+    y = new AxisRange(yUpper, yLower);
   }
 }

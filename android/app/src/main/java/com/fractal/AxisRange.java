@@ -4,8 +4,8 @@ public class AxisRange {
 
   double upper, lower;
 
-  AxisRange(double a, double b) {
-    upper = a;
-    lower = b;
+  AxisRange(double upperValue, double lowerValue) {
+    upper = upperValue;
+    lower = lowerValue;
   }
 }
