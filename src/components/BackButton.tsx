@@ -10,7 +10,7 @@ export function BackButton({navigation}: Props) {
   return (
     <Button
       transparent
-      textColor={Colors.orange}
+      textColor={Colors.lightGrey}
       text="Back"
       onPress={() => navigation.navigate('Home')}
     />

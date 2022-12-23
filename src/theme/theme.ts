@@ -10,4 +10,5 @@ export const Colors = {
   darkishGrey: '#2e3238',
   blackish: '#1b1c1c',
   white: '#ffffff',
+  blue: '#5234eb',
 };

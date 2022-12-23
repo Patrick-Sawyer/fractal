@@ -18,13 +18,13 @@ public class Color {
 
   public static Color[] getColorMap(int maxIterations) {
     Color[] colors = new Color[] {
-      new Color(69, 0, 207), // blue
-      new Color(255, 255, 255), // white
-      new Color(255, 195, 15), // yellow
-      new Color(255, 88, 51), // orange
-      new Color(199, 0, 57), // red
-      new Color(144, 12, 63), // maroon
-      new Color(88, 24, 69), // purple
+      new Color(104, 48, 255),
+      new Color(255, 255, 255),
+      new Color(255, 195, 15),
+      new Color(255, 88, 51),
+      new Color(199, 0, 57),
+      new Color(144, 12, 63),
+      new Color(88, 24, 69),
     };
 
     Color[] colorMap = new Color[maxIterations];

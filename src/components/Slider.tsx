@@ -27,7 +27,7 @@ export function Slider({onChange, initValue = 0, maxValue, minValue}: Props) {
     const totalWidth = e.nativeEvent.layout.width;
     width.current = totalWidth;
     anim.current = new Animated.Value(
-      (totalWidth * initValue) / (maxValue - minValue),
+      ((totalWidth - SLIDER_WIDTH) * initValue) / (maxValue - minValue),
     );
   };
 
@@ -98,6 +98,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 20,
+    marginTop: 10,
   },
   responder: {
     height: 40,

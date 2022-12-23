@@ -18,7 +18,7 @@ import {Complex, getCoord, Range} from '../utils/fractalUtils';
 
 const MIN_SENSITIVITY = 10;
 const MAX_SENSITIVITY = 500;
-const SENSITIVITY_INIT_VALUE = 75;
+const SENSITIVITY_INIT_VALUE = 500;
 
 interface Props {
   navigation: any;
@@ -67,7 +67,7 @@ const calcToFixedValue = ({range}: FractalSettings): number => {
 };
 
 export function HomeScreen({navigation}: Props) {
-  const size = useWindowDimensions().width;
+  const size = useWindowDimensions().width - 16;
   const [renderFractal, setRenderFractal] = useState(false);
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
   const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
@@ -152,7 +152,34 @@ export function HomeScreen({navigation}: Props) {
           )}
         </View>
       </View>
+
       <View style={styles.section}>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.large]}>{'Coordinate'}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
+          <Text style={styles.text}>{complex.real.toFixed(10)}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
+          <Text style={styles.text}>{complex.imaginary.toFixed(10)}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.large]}>{'Settings'}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <Text style={[styles.text, styles.light]}>
+            {'Maximum iterations per pixel:'}
+          </Text>
+          <Text style={styles.text}>{sensitivity}</Text>
+        </View>
+        <Slider
+          onChange={setSensitivity}
+          initValue={SENSITIVITY_INIT_VALUE}
+          maxValue={MAX_SENSITIVITY}
+          minValue={MIN_SENSITIVITY}
+        />
         <Button
           text={'Rerender'}
           disabled={loading}
@@ -199,35 +226,6 @@ export function HomeScreen({navigation}: Props) {
               : 'Show Julia set for these values'
           }
         />
-
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large]}>{'Coordinate'}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
-          <Text style={styles.text}>{complex.real.toFixed(10)}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
-          <Text style={styles.text}>{complex.imaginary.toFixed(10)}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large]}>{'Settings'}</Text>
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>
-            {'Maximum iterations per pixel:'}
-          </Text>
-          <Text style={styles.text}>{sensitivity}</Text>
-        </View>
-        <Slider
-          onChange={setSensitivity}
-          initValue={SENSITIVITY_INIT_VALUE}
-          maxValue={MAX_SENSITIVITY}
-          minValue={MIN_SENSITIVITY}
-        />
-      </View>
-      <View style={styles.section}>
         <Button
           onPress={() => {
             navigation.navigate('Explainer');
@@ -237,6 +235,9 @@ export function HomeScreen({navigation}: Props) {
           text={'What is a fractal?'}
         />
       </View>
+      <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
+        {'FRACTAL-GEN'}
+      </Text>
     </ScrollView>
   );
 }
@@ -263,6 +264,9 @@ const styles = StyleSheet.create({
   fractal: {
     backgroundColor: 'black',
     height: Dimensions.get('window').width,
+    borderRadius: 5,
+    overflow: 'hidden',
+    margin: 8,
   },
   ranges: {
     height: '100%',
@@ -289,7 +293,16 @@ const styles = StyleSheet.create({
   },
   large: {
     fontSize: 19,
-    fontWeight: '400',
+    fontWeight: 'bold',
     marginTop: 10,
+  },
+  title: {
+    color: Colors.grey,
+    width: '100%',
+    textAlign: 'center',
+    padding: 20,
+    fontFamily: 'fontEight',
+    fontSize: 30,
+    marginBottom: 20,
   },
 });

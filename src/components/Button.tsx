@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   text: {
     color: 'rgba(255,255,255,0.9)',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '700',
     paddingHorizontal: 10,
   },
   container: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 1,
+    borderRadius: 3,
   },
   shadow: {
     elevation: 4,
