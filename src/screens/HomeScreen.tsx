@@ -17,7 +17,7 @@ import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
 
 const MIN_SENSITIVITY = 10;
-const MAX_SENSITIVITY = 250;
+const MAX_SENSITIVITY = 500;
 const SENSITIVITY_INIT_VALUE = 75;
 
 interface Props {
