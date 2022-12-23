@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class FractalModule extends ReactContextBaseJavaModule {
 
-  int maxNumber = 3;
+  static int maxNumber = 5;
 
   FractalModule(ReactApplicationContext context) {
     super(context);
@@ -21,36 +21,35 @@ public class FractalModule extends ReactContextBaseJavaModule {
     return "FractalModule";
   }
 
-  private boolean hasHitMax(Complex x) {
+  private static boolean hasHitMax(Complex x) {
     return (
-      x.real *
-      x.real +
-      x.imaginary *
-      x.imaginary >
-      this.maxNumber *
-      this.maxNumber
+      x.real * x.real + x.imaginary * x.imaginary > maxNumber * maxNumber
     );
   }
 
-  private double getAxisPosition(AxisRange limits, int max, int position) {
+  private static double getAxisPosition(
+    AxisRange limits,
+    int max,
+    int position
+  ) {
     double fraction = (double) position / (double) max;
     double range = limits.upper - limits.lower;
     return range * fraction + limits.lower;
   }
 
-  private Complex getCoord(
+  private static Complex getCoord(
     int size,
     Range range,
     int xPosition,
     int yPosition
   ) {
-    double real = this.getAxisPosition(range.x, size, xPosition);
-    double imaginary = this.getAxisPosition(range.y, size, yPosition);
+    double real = getAxisPosition(range.x, size, xPosition);
+    double imaginary = getAxisPosition(range.y, size, yPosition);
     return new Complex(real, imaginary);
   }
 
   @ReactMethod
-  public void getFractal(
+  public static void getFractal(
     int size,
     double rangeXUpper,
     double rangeXLower,
@@ -70,13 +69,18 @@ public class FractalModule extends ReactContextBaseJavaModule {
       juliaSetValueImaginary
     );
 
-    WritableArray array = Arguments.createArray();
+    // WritableArray array = Arguments.createArray();
 
-    for (int y = size; y > 0; y--) {
+    int data[] = new int[size * size * 4];
+    Arrays.fill(data, 255);
+
+    for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
+        int xValue = x;
+        int yValue = y;
         boolean maxedOut = false;
         int howFast = 0;
-        Complex initCoord = getCoord(size, range, x, y);
+        Complex initCoord = getCoord(size, range, xValue, yValue);
         Complex iteration = initCoord;
 
         for (int i = 0; i < maxIterations - 1; i++) {
@@ -86,7 +90,7 @@ public class FractalModule extends ReactContextBaseJavaModule {
               square,
               (isJuliaSet == true) ? juliaSetValue : initCoord
             );
-          boolean hasHitMax = this.hasHitMax(iteration);
+          boolean hasHitMax = hasHitMax(iteration);
 
           if (hasHitMax == true) {
             maxedOut = true;
@@ -96,11 +100,17 @@ public class FractalModule extends ReactContextBaseJavaModule {
           }
         }
 
-        array.pushInt(maxedOut == true ? colorMap[howFast].red : 0);
-        array.pushInt(maxedOut == true ? colorMap[howFast].green : 0);
-        array.pushInt(maxedOut == true ? colorMap[howFast].blue : 0);
-        array.pushInt(255);
+        int index = ((size - y - 1) * size + x) * 4;
+        data[index] = maxedOut == true ? colorMap[howFast].red : 0;
+        data[index + 1] = maxedOut == true ? colorMap[howFast].green : 0;
+        data[index + 2] = maxedOut == true ? colorMap[howFast].blue : 0;
       }
+    }
+
+    WritableArray array = Arguments.createArray();
+
+    for (int i = 0; i < data.length; i++) {
+      array.pushInt(data[i]);
     }
 
     promise.resolve(array);
