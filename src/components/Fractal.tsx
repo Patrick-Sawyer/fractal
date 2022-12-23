@@ -9,6 +9,8 @@ interface Props {
   size: number;
   setLoading: (state: boolean) => void;
   sensitivity: number;
+  maxOutValue: number;
+  colors: string[];
 }
 
 function FractalComponent({
@@ -17,6 +19,8 @@ function FractalComponent({
   size,
   setLoading,
   sensitivity,
+  maxOutValue,
+  colors
 }: Props) {
   const pixels = size * PixelRatio.get();
 
@@ -32,6 +36,8 @@ function FractalComponent({
         range,
         juliaSetValue,
         sensitivity,
+        maxOutValue,
+        colors,
       );
       const data = new ImageData(canvas, colorData, pixels, pixels);
       context.putImageData(data, 0, 0);

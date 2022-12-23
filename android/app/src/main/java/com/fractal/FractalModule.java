@@ -5,13 +5,12 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class FractalModule extends ReactContextBaseJavaModule {
-
-  static int maxNumber = 5;
 
   FractalModule(ReactApplicationContext context) {
     super(context);
@@ -22,7 +21,7 @@ public class FractalModule extends ReactContextBaseJavaModule {
     return "FractalModule";
   }
 
-  private static boolean hasHitMax(Complex x) {
+  private static boolean hasHitMax(Complex x, int maxNumber) {
     return (
       x.real * x.real + x.imaginary * x.imaginary > maxNumber * maxNumber
     );
@@ -60,10 +59,12 @@ public class FractalModule extends ReactContextBaseJavaModule {
     double juliaSetValueImaginary,
     int maxIterations,
     boolean isJuliaSet,
+    int maxNumber,
+    ReadableArray colors,
     Promise promise
   ) {
     Range range = new Range(rangeXUpper, rangeXLower, rangeYUpper, rangeYLower);
-    Color[] colorMap = Color.getColorMap(maxIterations);
+    Color[] colorMap = Color.getColorMap(maxIterations, colors);
 
     Complex juliaSetValue = new Complex(
       juliaSetValueReal,
@@ -92,9 +93,9 @@ public class FractalModule extends ReactContextBaseJavaModule {
                     square,
                     (isJuliaSet == true) ? juliaSetValue : initCoord
                   );
-                boolean hasHitMax = hasHitMax(iteration);
+                boolean hitMax = hasHitMax(iteration, maxNumber);
 
-                if (hasHitMax == true) {
+                if (hitMax == true) {
                   maxedOut = true;
                   break;
                 } else {

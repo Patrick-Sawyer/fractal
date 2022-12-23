@@ -1,5 +1,8 @@
 package com.fractal;
 
+import com.facebook.react.bridge.ReadableArray;
+import java.lang.Integer;
+
 public class Color {
 
   int red, green, blue;
@@ -16,16 +19,24 @@ public class Color {
     );
   }
 
-  public static Color[] getColorMap(int maxIterations) {
-    Color[] colors = new Color[] {
-      new Color(104, 48, 255),
-      new Color(255, 255, 255),
-      new Color(255, 195, 15),
-      new Color(255, 88, 51),
-      new Color(199, 0, 57),
-      new Color(144, 12, 63),
-      new Color(88, 24, 69),
-    };
+  public static Color[] getColorMap(
+    int maxIterations,
+    ReadableArray colorStrings
+  ) {
+    Color[] colors = new Color[colorStrings.size()];
+    String comma = String.valueOf(',');
+
+    for (int i = 0; i < colors.length; i++) {
+      String rgbData = colorStrings.getString(i);
+      String[] colorComponents = rgbData.split(comma);
+
+      colors[i] =
+        new Color(
+          Integer.parseInt(colorComponents[0]),
+          Integer.parseInt(colorComponents[1]),
+          Integer.parseInt(colorComponents[2])
+        );
+    }
 
     Color[] colorMap = new Color[maxIterations];
 

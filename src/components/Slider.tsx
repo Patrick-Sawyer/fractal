@@ -5,7 +5,6 @@ import {
   View,
   GestureResponderEvent,
   LayoutChangeEvent,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import {Colors} from '../theme/theme';
 
@@ -34,7 +33,7 @@ export function Slider({onChange, initValue = 0, maxValue, minValue}: Props) {
   const debounced = (value: number) => {
     const now = Date.now();
 
-    if (now - lastUpdate.current > 250) {
+    if (now - lastUpdate.current > 50) {
       onChange(value);
       lastUpdate.current = now;
     }
@@ -98,8 +97,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
-    marginTop: 10,
   },
   responder: {
     height: 40,

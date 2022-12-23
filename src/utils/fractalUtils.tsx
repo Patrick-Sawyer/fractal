@@ -45,6 +45,8 @@ export const getFractal = async (
   range: Range,
   juliaSetValue: Complex | null,
   maxIterations = 30,
+  maxOutValue: number,
+  colors: string[],
 ): Promise<number[]> => {
   return await FractalModule.getFractal(
     size,
@@ -56,5 +58,7 @@ export const getFractal = async (
     juliaSetValue?.imaginary || 0,
     maxIterations,
     !!juliaSetValue,
+    maxOutValue,
+    colors,
   );
 };
