@@ -5,34 +5,51 @@ import {
   View,
   GestureResponderEvent,
   LayoutChangeEvent,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {Colors} from '../theme/theme';
 
 const SLIDER_WIDTH = 16;
 
 interface Props {
-  onChange?: (value: number) => void;
+  onChange: (value: number) => void;
   initValue?: number;
   maxValue: number;
+  minValue: number;
 }
 
-export function Slider({onChange, initValue = 0, maxValue}: Props) {
+export function Slider({onChange, initValue = 0, maxValue, minValue}: Props) {
   const anim = useRef<Animated.Value | null>(null);
   const width = useRef<number>();
+  const lastUpdate = useRef<number>(0);
 
   const onLayout = (e: LayoutChangeEvent) => {
     const totalWidth = e.nativeEvent.layout.width;
     width.current = totalWidth;
-    anim.current = new Animated.Value((totalWidth * initValue) / maxValue);
+    anim.current = new Animated.Value(
+      (totalWidth * initValue) / (maxValue - minValue),
+    );
   };
 
-  const onSlide = (e: GestureResponderEvent) => {
+  const debounced = (value: number) => {
+    const now = Date.now();
+
+    if (now - lastUpdate.current > 250) {
+      onChange(value);
+      lastUpdate.current = now;
+    }
+  };
+
+  const onSlide = (e: GestureResponderEvent, useReal = false) => {
+    e.stopPropagation();
+
     if (width.current) {
       const position = e.nativeEvent.locationX;
       const fraction = limit(position / width.current);
-      const value = fraction * width.current - SLIDER_WIDTH / 2;
-      anim.current?.setValue(value);
-      onChange && onChange(fraction);
+      const animValue = fraction * width.current - SLIDER_WIDTH / 2;
+      anim.current?.setValue(animValue);
+      const nextValue = Math.round(fraction * (maxValue - minValue)) + minValue;
+      useReal ? onChange(nextValue) : debounced(nextValue);
     }
   };
 
@@ -41,9 +58,13 @@ export function Slider({onChange, initValue = 0, maxValue}: Props) {
       <View
         onLayout={onLayout}
         onStartShouldSetResponder={() => true}
-        onResponderStart={onSlide}
-        onResponderMove={onSlide}
-        onResponderEnd={onSlide}
+        onMoveShouldSetResponder={() => true}
+        onMoveShouldSetResponderCapture={() => true}
+        onStartShouldSetResponderCapture={() => true}
+        onResponderTerminationRequest={() => false}
+        onResponderStart={e => onSlide(e, true)}
+        onResponderMove={e => onSlide(e)}
+        onResponderEnd={e => onSlide(e, true)}
         style={styles.responder}>
         <View pointerEvents="none" style={styles.track} />
         {anim.current && (

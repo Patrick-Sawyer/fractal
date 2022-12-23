@@ -110,13 +110,6 @@ export function HomeScreen({navigation}: Props) {
     setFractalSettings(settings);
   };
 
-  const handleSlider = (input: number) => {
-    const adjusted = 1 - Math.pow(1 - input, 0.5);
-    const value =
-      adjusted * (MAX_SENSITIVITY - MIN_SENSITIVITY) + MIN_SENSITIVITY;
-    setSensitivity(Math.round(value));
-  };
-
   useEffect(() => {
     setTimeout(() => {
       setRenderFractal(true);
@@ -228,9 +221,10 @@ export function HomeScreen({navigation}: Props) {
           <Text style={styles.text}>{sensitivity}</Text>
         </View>
         <Slider
-          onChange={handleSlider}
+          onChange={setSensitivity}
           initValue={SENSITIVITY_INIT_VALUE}
           maxValue={MAX_SENSITIVITY}
+          minValue={MIN_SENSITIVITY}
         />
       </View>
       <View style={styles.section}>
@@ -288,7 +282,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   scroll: {
     paddingTop: 10,
