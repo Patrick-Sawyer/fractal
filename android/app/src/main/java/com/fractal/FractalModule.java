@@ -69,8 +69,6 @@ public class FractalModule extends ReactContextBaseJavaModule {
       juliaSetValueImaginary
     );
 
-    // WritableArray array = Arguments.createArray();
-
     int data[] = new int[size * size * 4];
     Arrays.fill(data, 255);
 
