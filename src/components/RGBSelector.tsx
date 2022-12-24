@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +6,9 @@ import {
   LayoutAnimation,
   UIManager,
   TouchableNativeFeedback,
+  TouchableOpacity,
 } from 'react-native';
+import {INIT_COLORS} from '../screens/HomeScreen';
 import {Colors} from '../theme/theme';
 import {Slider} from './Slider';
 
@@ -43,6 +45,7 @@ interface Props {
 }
 
 export function RGBSelector({colors, setColors}: Props) {
+  const lastAction = useRef(0);
   const [newColor, setNewColor] = useState<Color>({
     red: 255,
     green: 0,
@@ -67,6 +70,12 @@ export function RGBSelector({colors, setColors}: Props) {
           />
         ))}
       </View>
+      <TouchableOpacity
+        onPress={() => {
+          setColors(INIT_COLORS);
+        }}>
+        <Text style={[styles.text, styles.button]}>{'Revert colours'}</Text>
+      </TouchableOpacity>
       <View style={styles.subHeader}>
         <Text key={'add-new-color'} style={styles.text}>
           {'Add new colour:'}
@@ -79,10 +88,14 @@ export function RGBSelector({colors, setColors}: Props) {
         <SelectedColor
           key={'new-color'}
           onPress={() => {
-            const newColors = [...colors];
-            newColors.push(newColor);
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-            setColors(newColors);
+            const now = Date.now();
+            if (now - lastAction.current > 1000) {
+              const newColors = [...colors];
+              newColors.push(newColor);
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+              setColors(newColors);
+              lastAction.current = now;
+            }
           }}
           color={newColor}
         />
@@ -91,7 +104,7 @@ export function RGBSelector({colors, setColors}: Props) {
       <Slider
         minValue={0}
         maxValue={255}
-        initValue={255}
+        value={newColor.red}
         onChange={value => {
           const color = {...newColor};
           color.red = value;
@@ -107,11 +120,13 @@ export function RGBSelector({colors, setColors}: Props) {
           color.green = value;
           setNewColor(color);
         }}
+        value={newColor.green}
       />
 
       <Slider
         minValue={0}
         maxValue={255}
+        value={newColor.blue}
         onChange={value => {
           const color = {...newColor};
           color.blue = value;
@@ -131,7 +146,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   opacity: {
-    opacity: 0.1,
+    color: 'rgba(255,255,255,0.5)',
     marginLeft: 10,
   },
   subHeader: {
@@ -192,11 +207,17 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   selectedColors: {
-    marginBottom: 10,
     flexDirection: 'row',
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 15,
+  },
+  button: {
+    color: 'white',
+    padding: 10,
+    paddingBottom: 15,
+    textAlign: 'center',
   },
 });

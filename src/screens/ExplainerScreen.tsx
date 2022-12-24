@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   large: {
-    color: Colors.grey,
+    color: 'rgba(255,255,255,0.5)',
     width: '100%',
     textAlign: 'center',
     marginBottom: 30,

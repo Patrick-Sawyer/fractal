@@ -95,14 +95,13 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   shadow: {
-    elevation: 4,
+    shadowColor: '#000',
     shadowOffset: {
-      width: 3,
-      height: 3,
+      width: 0,
+      height: 4,
     },
-    shadowOpacity: 0.7,
-    shadowRadius: 4,
-    shadowColor: 'black',
-    shadowBlur: 20,
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
 });

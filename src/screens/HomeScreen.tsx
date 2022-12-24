@@ -25,7 +25,7 @@ const INIT_MAX_OUT_VALUE = 5;
 const MIN_MAX_OUT_VALUE = 3;
 const MAX_MAX_OUT_VALUE = 15;
 
-const INIT_COLORS: Color[] = [
+export const INIT_COLORS: Color[] = [
   {red: 104, green: 48, blue: 255},
   {red: 255, green: 255, blue: 255},
   {red: 255, green: 195, blue: 15},
@@ -268,9 +268,9 @@ export function HomeScreen({navigation}: Props) {
         </View>
         <Slider
           onChange={setSensitivity}
-          initValue={SENSITIVITY_INIT_VALUE}
           maxValue={MAX_SENSITIVITY}
           minValue={MIN_SENSITIVITY}
+          value={sensitivity}
         />
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>{'Max-out value:'}</Text>
@@ -278,9 +278,9 @@ export function HomeScreen({navigation}: Props) {
         </View>
         <Slider
           onChange={setMaxOutValue}
-          initValue={INIT_MAX_OUT_VALUE}
           maxValue={MAX_MAX_OUT_VALUE}
           minValue={MIN_MAX_OUT_VALUE}
+          value={maxOutValue}
         />
         <View style={styles.textRow}>
           <View style={styles.subHeader}>
@@ -292,6 +292,7 @@ export function HomeScreen({navigation}: Props) {
         </View>
         <RGBSelector colors={colors} setColors={setColors} />
       </View>
+      <Text style={[styles.trippy, {color: Colors.red}]}>{'N'}</Text>
       <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
         {'FRACTAL GENERATOR'}
       </Text>
@@ -302,7 +303,7 @@ export function HomeScreen({navigation}: Props) {
 const styles = StyleSheet.create({
   titleTop: {marginBottom: 0, marginTop: 10, paddingBottom: 10},
   opacity: {
-    opacity: 0.2,
+    color: 'rgba(255,255,255,0.5)',
     marginLeft: 10,
   },
   subHeader: {
@@ -373,7 +374,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title: {
-    color: Colors.grey,
+    color: 'rgba(255,255,255,0.5)',
     width: '100%',
     textAlign: 'center',
     paddingHorizontal: 20,
@@ -382,5 +383,14 @@ const styles = StyleSheet.create({
     fontFamily: 'fontEight',
     fontSize: 30,
     marginBottom: 20,
+  },
+  trippy: {
+    fontSize: 100,
+    fontFamily: 'fontSeven',
+    textAlign: 'center',
+    width: '100%',
+    padding: 8,
+    marginBottom: 70,
+    marginTop: 40,
   },
 });
