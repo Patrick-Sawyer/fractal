@@ -100,7 +100,7 @@ export function RGBSelector({colors, setColors}: Props) {
           color={newColor}
         />
       </View>
-      <Text style={styles.text}>{'RGB:'}</Text>
+      <Text style={styles.text}>{'Red:'}</Text>
       <Slider
         minValue={0}
         maxValue={255}
@@ -111,7 +111,7 @@ export function RGBSelector({colors, setColors}: Props) {
           setNewColor(color);
         }}
       />
-
+      <Text style={styles.text}>{'Green:'}</Text>
       <Slider
         minValue={0}
         maxValue={255}
@@ -122,7 +122,7 @@ export function RGBSelector({colors, setColors}: Props) {
         }}
         value={newColor.green}
       />
-
+      <Text style={styles.text}>{'Blue:'}</Text>
       <Slider
         minValue={0}
         maxValue={255}

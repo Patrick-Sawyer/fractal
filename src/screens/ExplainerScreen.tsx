@@ -87,7 +87,13 @@ export function ExplainerScreen({navigation}: Props) {
           {'The function that is used in the mandelbrot set is as follows.'}
         </Text>
         <View style={styles.equation}>
-          <Text style={[styles.text, styles.example, styles.noPadding]}>
+          <Text
+            style={[
+              styles.text,
+              styles.example,
+              styles.noPadding,
+              {width: 15},
+            ]}>
             {'z'}
           </Text>
           <Text
@@ -100,7 +106,13 @@ export function ExplainerScreen({navigation}: Props) {
             ]}>
             {'n+1'}
           </Text>
-          <Text style={[styles.text, styles.example, styles.noPadding]}>
+          <Text
+            style={[
+              styles.text,
+              styles.example,
+              styles.noPadding,
+              {width: 33},
+            ]}>
             {' = z'}
           </Text>
           <Text
@@ -110,6 +122,7 @@ export function ExplainerScreen({navigation}: Props) {
               styles.noPadding,
               styles.small,
               styles.bottomText,
+              {width: 12},
             ]}>
             {'n'}
           </Text>
@@ -119,10 +132,17 @@ export function ExplainerScreen({navigation}: Props) {
               styles.example,
               styles.noPadding,
               styles.small,
+              {width: 10},
             ]}>
             {'2'}
           </Text>
-          <Text style={[styles.text, styles.example, styles.noPadding]}>
+          <Text
+            style={[
+              styles.text,
+              styles.example,
+              styles.noPadding,
+              {width: 33},
+            ]}>
             {' + c'}
           </Text>
         </View>
@@ -135,7 +155,7 @@ export function ExplainerScreen({navigation}: Props) {
         <Text style={[styles.text, styles.large]}>{'JULIA SETS'}</Text>
         <Text style={styles.text}>
           {
-            'Julia sets are the same, although this time the value of "c" is different. There are many many Julia sets, all with a different complex number for the value of "c".'
+            'Julia sets are the same, although this time the value of "c" is different. There are many many Julia sets, all with a different complex number for the value of "c". With the Mandelbrot set, the c value is the complex number represented by that coordinate. For Julia sets, and entire Julia set has the same value for c.'
           }
         </Text>
         <Text style={[styles.trippy, {color: Colors.purple}]}>{'B'}</Text>
@@ -173,28 +193,13 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     position: 'relative',
-    top: 6,
+    top: 12,
   },
   noPadding: {
     paddingHorizontal: 0,
   },
-  equation: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 20,
-    justifyContent: 'center',
-    paddingLeft: 10,
-    marginBottom: 10,
-  },
   small: {
     fontSize: 12,
-  },
-  text: {
-    color: Colors.white,
-    fontSize: 13,
-    paddingBottom: 10,
-    opacity: 0.9,
-    letterSpacing: 0.2,
   },
   large: {
     color: 'rgba(255,255,255,0.5)',
@@ -204,11 +209,24 @@ const styles = StyleSheet.create({
     fontFamily: 'fontEight',
     fontSize: 20,
   },
+  text: {
+    color: Colors.white,
+    fontSize: 13,
+    paddingBottom: 10,
+    opacity: 0.9,
+    letterSpacing: 0.2,
+  },
+  equation: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
   example: {
     fontStyle: 'italic',
     color: Colors.lightGrey,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 19,
     textAlign: 'center',
   },
   trippy: {

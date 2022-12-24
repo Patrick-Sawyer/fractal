@@ -5,6 +5,7 @@ import {
   GestureResponderEvent,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -23,7 +24,7 @@ const SENSITIVITY_INIT_VALUE = 500;
 
 const INIT_MAX_OUT_VALUE = 5;
 const MIN_MAX_OUT_VALUE = 3;
-const MAX_MAX_OUT_VALUE = 15;
+const MAX_MAX_OUT_VALUE = 50;
 
 export const INIT_COLORS: Color[] = [
   {red: 104, green: 48, blue: 255},
@@ -191,31 +192,27 @@ export function HomeScreen({navigation}: Props) {
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
-          <Text style={styles.text}>{complex.real.toFixed(10)}</Text>
+          <Text style={styles.text}>{complex.real.toFixed(15)}</Text>
         </View>
         <View style={[styles.textRow, {marginBottom: 15}]}>
           <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
-          <Text style={styles.text}>{complex.imaginary.toFixed(10)}</Text>
+          <Text style={styles.text}>{complex.imaginary.toFixed(15)}</Text>
         </View>
-        <Button
-          text={'Re-render'}
-          disabled={loading}
-          onPress={() => {
-            const {range, juliaSetValue} = fractalSettings;
-
-            setFractalSettings({
-              range,
-              juliaSetValue,
-              sensitivity,
-              maxOutValue,
-              colors: convertColors(colors),
-            });
-          }}
-          color={Colors.orange}
-        />
         <Button
           text={'Zoom into this coord'}
           onPress={zoom}
+          color={Colors.orange}
+          disabled={loading}
+        />
+        <Button
+          text={'Reset zoom'}
+          onPress={() => {
+            const settings = {...fractalSettings};
+            settings.range = settings.juliaSetValue
+              ? INIT_JULIA_SET_RANGE
+              : INIT_RANGE;
+            setFractalSettings(settings);
+          }}
           color={Colors.red}
           disabled={loading}
         />
@@ -248,14 +245,6 @@ export function HomeScreen({navigation}: Props) {
               ? 'Back to mandelbrot set'
               : 'Show Julia set for these values'
           }
-        />
-        <Button
-          onPress={() => {
-            navigation.navigate('Explainer');
-          }}
-          disabled={loading}
-          color={Colors.purple}
-          text={'What is a fractal?'}
         />
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.large]}>{'Settings'}</Text>
@@ -291,16 +280,44 @@ export function HomeScreen({navigation}: Props) {
           </View>
         </View>
         <RGBSelector colors={colors} setColors={setColors} />
+        <Button
+          text={'Re-render with these settings'}
+          disabled={loading}
+          onPress={() => {
+            const {range, juliaSetValue} = fractalSettings;
+
+            setFractalSettings({
+              range,
+              juliaSetValue,
+              sensitivity,
+              maxOutValue,
+              colors: convertColors(colors),
+            });
+          }}
+          color={Colors.purple}
+        />
+        <Button
+          text={'What is a fractal?'}
+          disabled={loading}
+          transparent
+          onPress={() => {
+            navigation.navigate('Explainer');
+          }}
+        />
       </View>
       <Text style={[styles.trippy, {color: Colors.red}]}>{'N'}</Text>
       <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
         {'FRACTAL GENERATOR'}
+      </Text>
+      <Text style={[styles.text, styles.footer]}>
+        {'Patrick Sawyer - 2022'}
       </Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  footer: {opacity: 0.2, width: '100%', textAlign: 'center', paddingBottom: 20},
   titleTop: {marginBottom: 0, marginTop: 10, paddingBottom: 10},
   opacity: {
     color: 'rgba(255,255,255,0.5)',
@@ -316,7 +333,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '400',
     fontSize: 15,
-    paddingBottom: 10,
     fontVariant: ['tabular-nums'],
     opacity: 0.9,
   },
@@ -371,14 +387,13 @@ const styles = StyleSheet.create({
   large: {
     fontSize: 19,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginVertical: 10,
   },
   title: {
     color: 'rgba(255,255,255,0.5)',
     width: '100%',
     textAlign: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 20,
     paddingTop: 10,
     fontFamily: 'fontEight',
     fontSize: 30,
