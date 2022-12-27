@@ -293,8 +293,16 @@ export function HomeScreen({navigation}: Props) {
               : 'Show Julia set for these values'
           }
         />
+        <Button
+          text={'What is a fractal?'}
+          disabled={loading}
+          transparent
+          onPress={() => {
+            navigation.navigate('Explainer');
+          }}
+        />
         <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large]}>{'Settings'}</Text>
+          <Text style={[styles.text, styles.large, {marginTop: 0}]}>{'Settings'}</Text>
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>
@@ -343,14 +351,6 @@ export function HomeScreen({navigation}: Props) {
             });
           }}
           color={'rgba(0,0,0,0.3)'}
-        />
-        <Button
-          text={'What is a fractal?'}
-          disabled={loading}
-          transparent
-          onPress={() => {
-            navigation.navigate('Explainer');
-          }}
         />
       </View>
       <Text style={[styles.trippy, {color: Colors.blue}]}>{'N'}</Text>
