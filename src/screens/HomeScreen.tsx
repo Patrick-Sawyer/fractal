@@ -16,6 +16,7 @@ import {CoordIndicator} from '../components/CoordIndicator';
 import {Fractal} from '../components/Fractal';
 import {Color, RGBSelector} from '../components/RGBSelector';
 import {Slider} from '../components/Slider';
+import {Touch} from '../components/Touch';
 import {Colors} from '../theme/theme';
 import {Complex, getCoord, Range} from '../utils/fractalUtils';
 
@@ -89,11 +90,17 @@ const calcToFixedValue = ({range}: FractalSettings): number => {
   return result;
 };
 
+interface Touch {
+  x: number;
+  y: number;
+}
+
 export function HomeScreen({navigation}: Props) {
   const size = useWindowDimensions().width - 16;
   const [renderFractal, setRenderFractal] = useState(false);
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
   const [colors, setColors] = useState<Color[]>(INIT_COLORS);
+  const [touch, setTouch] = useState<Touch | null>(null);
   const textColorAnimation = useRef(new Animated.Value(0)).current;
   const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
     range: INIT_RANGE,
@@ -130,6 +137,7 @@ export function HomeScreen({navigation}: Props) {
       y: locationY,
     });
     setComplex(newCoord);
+    setTouch({x: locationX, y: locationY});
   };
 
   const zoom = () => {
@@ -157,6 +165,10 @@ export function HomeScreen({navigation}: Props) {
   };
 
   useEffect(() => {
+    setTouch(null);
+  }, [fractalSettings]);
+
+  useEffect(() => {
     setTimeout(() => {
       setRenderFractal(true);
     }, 500);
@@ -170,39 +182,46 @@ export function HomeScreen({navigation}: Props) {
         style={[styles.title, styles.titleTop]}>
         {'FRACTAL GENERATOR'}
       </Text>
-      <View style={[styles.fractal, {height: size, width: size}]}>
-        {renderFractal && (
-          <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
-        )}
-        <TouchableNativeFeedback onPress={onPressFractal}>
-          <View style={styles.ranges}>
-            <CoordIndicator
-              value={fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'}
-            />
-            <CoordIndicator
-              value={fractalSettings.range.x.upper.toFixed(toFixedValue)}
-              rotate="90deg"
-            />
-            <CoordIndicator
-              value={fractalSettings.range.x.lower.toFixed(toFixedValue)}
-              rotate="270deg"
-            />
-            <CoordIndicator
-              value={fractalSettings.range.y.lower.toFixed(toFixedValue) + 'i'}
-              rotate="180deg"
-              flip
-            />
-            {loading && (
-              <View style={styles.loading} pointerEvents="none">
-                <ActivityIndicator
-                  animating
-                  color={Colors.white}
-                  size={'large'}
-                />
-              </View>
-            )}
-          </View>
-        </TouchableNativeFeedback>
+      <View style={{overflow: 'visible'}}>
+        <View style={[styles.fractal, {height: size, width: size}]}>
+          {renderFractal && (
+            <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
+          )}
+          <TouchableNativeFeedback onPress={onPressFractal}>
+            <View style={styles.ranges}>
+              <CoordIndicator
+                value={
+                  fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'
+                }
+              />
+              <CoordIndicator
+                value={fractalSettings.range.x.upper.toFixed(toFixedValue)}
+                rotate="90deg"
+              />
+              <CoordIndicator
+                value={fractalSettings.range.x.lower.toFixed(toFixedValue)}
+                rotate="270deg"
+              />
+              <CoordIndicator
+                value={
+                  fractalSettings.range.y.lower.toFixed(toFixedValue) + 'i'
+                }
+                rotate="180deg"
+                flip
+              />
+              {loading && (
+                <View style={styles.loading} pointerEvents="none">
+                  <ActivityIndicator
+                    animating
+                    color={Colors.white}
+                    size={'large'}
+                  />
+                </View>
+              )}
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+        {!loading && <Touch position={touch} />}
       </View>
       <View style={[styles.section, {paddingTop: 0}]}>
         <View style={styles.textRow}>
