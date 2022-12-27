@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {Slider as SliderComponent} from '@miblanchard/react-native-slider';
 
@@ -16,9 +16,9 @@ export function Slider({onChange, value = 0, maxValue, minValue}: Props) {
       maximumValue={maxValue}
       minimumValue={minValue}
       value={value}
-      renderThumbComponent={() => null}
       containerStyle={styles.container}
       minimumTrackTintColor={'rgba(255,255,255,0.5)'}
+      renderThumbComponent={() => <View style={styles.thumb} />}
       trackClickable
       trackStyle={styles.track}
       onValueChange={(v: number[]) => onChange(Math.round(v[0]))}
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     display: 'flex',
-    alignItems: 'center',
+
     justifyContent: 'center',
     overflow: 'hidden',
   },
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     height: 14,
     width: 14,
     borderRadius: 7,
+    backgroundColor: 'white',
   },
   track: {
     backgroundColor: 'black',

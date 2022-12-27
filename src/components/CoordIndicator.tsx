@@ -10,7 +10,9 @@ interface Props {
 
 export function CoordIndicator({value, rotate, flip}: Props) {
   return (
-    <View style={[styles.wrapper, !!rotate && {transform: [{rotate}]}]}>
+    <View
+      style={[styles.wrapper, !!rotate && {transform: [{rotate}]}]}
+      pointerEvents="none">
       <Text style={[styles.text, flip && {transform: [{rotate: '180deg'}]}]}>
         {value}
       </Text>

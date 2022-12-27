@@ -74,7 +74,7 @@ export function RGBSelector({colors, setColors}: Props) {
         onPress={() => {
           setColors(INIT_COLORS);
         }}>
-        <Text style={[styles.text, styles.button]}>{'Revert colours'}</Text>
+        <Text style={[styles.text, styles.button]}>{'Default colours'}</Text>
       </TouchableOpacity>
       <View style={styles.subHeader}>
         <Text key={'add-new-color'} style={styles.text}>

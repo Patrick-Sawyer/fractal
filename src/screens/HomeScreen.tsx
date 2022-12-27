@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
   GestureResponderEvent,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  TouchableNativeFeedback,
   useWindowDimensions,
   View,
+  Animated,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
@@ -27,7 +28,7 @@ const MIN_MAX_OUT_VALUE = 3;
 const MAX_MAX_OUT_VALUE = 50;
 
 export const INIT_COLORS: Color[] = [
-  {red: 104, green: 48, blue: 255},
+  {red: 16, green: 27, blue: 122},
   {red: 255, green: 255, blue: 255},
   {red: 255, green: 195, blue: 15},
   {red: 255, green: 88, blue: 51},
@@ -93,6 +94,7 @@ export function HomeScreen({navigation}: Props) {
   const [renderFractal, setRenderFractal] = useState(false);
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
   const [colors, setColors] = useState<Color[]>(INIT_COLORS);
+  const textColorAnimation = useRef(new Animated.Value(0)).current;
   const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
     range: INIT_RANGE,
     juliaSetValue: null,
@@ -105,7 +107,23 @@ export function HomeScreen({navigation}: Props) {
   const [sensitivity, setSensitivity] = useState(SENSITIVITY_INIT_VALUE);
   const [maxOutValue, setMaxOutValue] = useState(INIT_MAX_OUT_VALUE);
 
+  const textColor = textColorAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgb(255, 255, 255)', 'rgb(0, 30, 255)'],
+  });
+
   const onPressFractal = (e: GestureResponderEvent) => {
+    Animated.timing(textColorAnimation, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      Animated.timing(textColorAnimation, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: false,
+      }).start();
+    });
     const {locationX, locationY} = e.nativeEvent;
     const newCoord = getCoord(size, fractalSettings.range, {
       x: locationX,
@@ -152,39 +170,39 @@ export function HomeScreen({navigation}: Props) {
         style={[styles.title, styles.titleTop]}>
         {'FRACTAL GENERATOR'}
       </Text>
-      <View
-        onTouchStart={onPressFractal}
-        style={[styles.fractal, {height: size, width: size}]}>
+      <View style={[styles.fractal, {height: size, width: size}]}>
         {renderFractal && (
           <Fractal setLoading={setLoading} size={size} {...fractalSettings} />
         )}
-        <View style={styles.ranges} pointerEvents="none">
-          <CoordIndicator
-            value={fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'}
-          />
-          <CoordIndicator
-            value={fractalSettings.range.x.upper.toFixed(toFixedValue)}
-            rotate="90deg"
-          />
-          <CoordIndicator
-            value={fractalSettings.range.x.lower.toFixed(toFixedValue)}
-            rotate="270deg"
-          />
-          <CoordIndicator
-            value={fractalSettings.range.y.lower.toFixed(toFixedValue) + 'i'}
-            rotate="180deg"
-            flip
-          />
-          {loading && (
-            <View style={styles.loading}>
-              <ActivityIndicator
-                animating
-                color={Colors.white}
-                size={'large'}
-              />
-            </View>
-          )}
-        </View>
+        <TouchableNativeFeedback onPress={onPressFractal}>
+          <View style={styles.ranges}>
+            <CoordIndicator
+              value={fractalSettings.range.y.upper.toFixed(toFixedValue) + 'i'}
+            />
+            <CoordIndicator
+              value={fractalSettings.range.x.upper.toFixed(toFixedValue)}
+              rotate="90deg"
+            />
+            <CoordIndicator
+              value={fractalSettings.range.x.lower.toFixed(toFixedValue)}
+              rotate="270deg"
+            />
+            <CoordIndicator
+              value={fractalSettings.range.y.lower.toFixed(toFixedValue) + 'i'}
+              rotate="180deg"
+              flip
+            />
+            {loading && (
+              <View style={styles.loading} pointerEvents="none">
+                <ActivityIndicator
+                  animating
+                  color={Colors.white}
+                  size={'large'}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableNativeFeedback>
       </View>
       <View style={[styles.section, {paddingTop: 0}]}>
         <View style={styles.textRow}>
@@ -192,11 +210,27 @@ export function HomeScreen({navigation}: Props) {
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>{'Real:'}</Text>
-          <Text style={styles.text}>{complex.real.toFixed(15)}</Text>
+          <Animated.Text
+            style={[
+              styles.text,
+              {
+                color: textColor,
+              },
+            ]}>
+            {complex.real.toFixed(15)}
+          </Animated.Text>
         </View>
         <View style={[styles.textRow, {marginBottom: 15}]}>
           <Text style={[styles.text, styles.light]}>{'Imaginary:'}</Text>
-          <Text style={styles.text}>{complex.imaginary.toFixed(15)}</Text>
+          <Animated.Text
+            style={[
+              styles.text,
+              {
+                color: textColor,
+              },
+            ]}>
+            {complex.imaginary.toFixed(15)}
+          </Animated.Text>
         </View>
         <Button
           text={'Zoom into this coord'}
@@ -280,6 +314,7 @@ export function HomeScreen({navigation}: Props) {
           </View>
         </View>
         <RGBSelector colors={colors} setColors={setColors} />
+        <View style={{height: 10}} />
         <Button
           text={'Re-render with these settings'}
           disabled={loading}
@@ -317,7 +352,13 @@ export function HomeScreen({navigation}: Props) {
 }
 
 const styles = StyleSheet.create({
-  footer: {opacity: 0.2, width: '100%', textAlign: 'center', paddingBottom: 20},
+  footer: {
+    opacity: 0.2,
+    width: '100%',
+    textAlign: 'center',
+    paddingBottom: 20,
+    fontSize: 10,
+  },
   titleTop: {marginBottom: 0, marginTop: 10, paddingBottom: 10},
   opacity: {
     color: 'rgba(255,255,255,0.5)',

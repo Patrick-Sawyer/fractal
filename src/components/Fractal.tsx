@@ -20,7 +20,7 @@ function FractalComponent({
   setLoading,
   sensitivity,
   maxOutValue,
-  colors
+  colors,
 }: Props) {
   const pixels = size * PixelRatio.get();
 
