@@ -9,8 +9,7 @@ interface Props {
 export function BackButton({navigation}: Props) {
   return (
     <Button
-      transparent
-      textColor={Colors.lightGrey}
+      color={Colors.blue}
       text="Back"
       onPress={() => navigation.navigate('Home')}
     />

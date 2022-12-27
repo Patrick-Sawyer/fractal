@@ -11,4 +11,6 @@ export const Colors = {
   blackish: '#1b1c1c',
   white: '#ffffff',
   blue: '#5234eb',
+  nav: '#3c085e',
+  board: '#322947',
 };

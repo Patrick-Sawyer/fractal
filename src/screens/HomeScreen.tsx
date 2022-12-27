@@ -29,7 +29,7 @@ const MIN_MAX_OUT_VALUE = 3;
 const MAX_MAX_OUT_VALUE = 50;
 
 export const INIT_COLORS: Color[] = [
-  {red: 16, green: 27, blue: 122},
+  {red: 83, green: 52, blue: 255},
   {red: 255, green: 255, blue: 255},
   {red: 255, green: 195, blue: 15},
   {red: 255, green: 88, blue: 51},
@@ -176,12 +176,6 @@ export function HomeScreen({navigation}: Props) {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <Text
-        adjustsFontSizeToFit
-        numberOfLines={1}
-        style={[styles.title, styles.titleTop]}>
-        {'FRACTAL GENERATOR'}
-      </Text>
       <View style={{overflow: 'visible'}}>
         <View style={[styles.fractal, {height: size, width: size}]}>
           {renderFractal && (
@@ -223,7 +217,7 @@ export function HomeScreen({navigation}: Props) {
         </View>
         {!loading && <Touch position={touch} />}
       </View>
-      <View style={[styles.section, {paddingTop: 0}]}>
+      <View style={[styles.section, styles.board]}>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.large]}>{'Coordinate'}</Text>
         </View>
@@ -348,7 +342,7 @@ export function HomeScreen({navigation}: Props) {
               colors: convertColors(colors),
             });
           }}
-          color={Colors.purple}
+          color={'rgba(0,0,0,0.3)'}
         />
         <Button
           text={'What is a fractal?'}
@@ -359,7 +353,7 @@ export function HomeScreen({navigation}: Props) {
           }}
         />
       </View>
-      <Text style={[styles.trippy, {color: Colors.red}]}>{'N'}</Text>
+      <Text style={[styles.trippy, {color: Colors.blue}]}>{'N'}</Text>
       <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
         {'FRACTAL GENERATOR'}
       </Text>
@@ -372,13 +366,13 @@ export function HomeScreen({navigation}: Props) {
 
 const styles = StyleSheet.create({
   footer: {
-    opacity: 0.2,
+    opacity: 0.5,
     width: '100%',
     textAlign: 'center',
+    color: 'black',
     paddingBottom: 20,
     fontSize: 10,
   },
-  titleTop: {marginBottom: 0, marginTop: 10, paddingBottom: 10},
   opacity: {
     color: 'rgba(255,255,255,0.5)',
     marginLeft: 10,
@@ -412,14 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: 'hidden',
     margin: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.36,
-    shadowRadius: 6.68,
-    elevation: 11,
+    elevation: 4,
   },
   ranges: {
     height: '100%',
@@ -450,11 +437,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   title: {
-    color: 'rgba(255,255,255,0.5)',
+    color: '#ff008c',
     width: '100%',
     textAlign: 'center',
     paddingHorizontal: 20,
-    paddingTop: 10,
     fontFamily: 'fontEight',
     fontSize: 30,
     marginBottom: 20,
@@ -465,7 +451,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: '100%',
     padding: 8,
-    marginBottom: 70,
-    marginTop: 40,
+    marginVertical: 40,
+  },
+  board: {
+    paddingTop: 0,
+    backgroundColor: Colors.board,
+    marginHorizontal: 8,
+    borderRadius: 5,
+    elevation: 4,
   },
 });

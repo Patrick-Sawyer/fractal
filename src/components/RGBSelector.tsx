@@ -7,6 +7,7 @@ import {
   UIManager,
   TouchableNativeFeedback,
   TouchableOpacity,
+  PixelRatio,
 } from 'react-native';
 import {INIT_COLORS} from '../screens/HomeScreen';
 import {Colors} from '../theme/theme';
@@ -59,12 +60,14 @@ export function RGBSelector({colors, setColors}: Props) {
           <SelectedColor
             key={index}
             onLongPress={() => {
-              const newColors = [...colors];
-              newColors.splice(index, 1);
-              LayoutAnimation.configureNext(
-                LayoutAnimation.Presets.easeInEaseOut,
-              );
-              setColors(newColors);
+              if (colors.length > 0) {
+                const newColors = [...colors];
+                newColors.splice(index, 1);
+                LayoutAnimation.configureNext(
+                  LayoutAnimation.Presets.easeInEaseOut,
+                );
+                setColors(newColors);
+              }
             }}
             color={color}
           />
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   block: {
-    borderWidth: 1,
+    borderWidth: 1 / PixelRatio.get(),
     borderColor: Colors.lightGrey,
     borderRadius: 2,
     height: 40,

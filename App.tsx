@@ -2,25 +2,17 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {Colors} from './src/theme/theme';
-import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/screens/HomeScreen';
 import {ExplainerScreen} from './src/screens/ExplainerScreen';
 const Stack = createNativeStackNavigator();
 
-const MyTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: Colors.darkGrey,
-  },
-};
-
 const App = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle={'light-content'} backgroundColor={Colors.blackish} />
-      <NavigationContainer theme={MyTheme}>
+      <StatusBar barStyle={'light-content'} backgroundColor={Colors.nav} />
+      <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
@@ -36,7 +28,7 @@ const App = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: Colors.blackish,
+    backgroundColor: Colors.nav,
     height: '100%',
   },
 });

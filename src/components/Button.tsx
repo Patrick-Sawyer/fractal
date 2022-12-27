@@ -43,35 +43,37 @@ export function Button({
 
   return (
     <View style={styles.container}>
-      <TouchableNativeFeedback
-        background={TouchableNativeFeedback.Ripple(
-          'rgba(255,255,255,0.1)',
-          false,
-        )}
-        onPress={onClick}>
-        <View
-          style={[
-            styles.inner,
-            !transparent &&
-              styles.shadow && {
-                backgroundColor: color,
-              },
-            pressed &&
-              (Platform.OS === 'ios' || !transparent) && {
-                backgroundColor: 'rgba(0,0,0,0.1)',
-              },
-          ]}>
-          {pressed ? (
-            <ActivityIndicator size="small" animating color="white" />
-          ) : (
-            <Text
-              numberOfLines={1}
-              style={[styles.text, !!textColor && {color: textColor}]}>
-              {text}
-            </Text>
+      <View style={{borderRadius: 3, overflow: 'hidden'}}>
+        <TouchableNativeFeedback
+          background={TouchableNativeFeedback.Ripple(
+            'rgba(255,255,255,0.1)',
+            false,
           )}
-        </View>
-      </TouchableNativeFeedback>
+          onPress={onClick}>
+          <View
+            style={[
+              styles.inner,
+              !transparent &&
+                styles.shadow && {
+                  backgroundColor: color,
+                },
+              pressed &&
+                (Platform.OS === 'ios' || !transparent) && {
+                  backgroundColor: 'rgba(0,0,0,0.1)',
+                },
+            ]}>
+            {pressed ? (
+              <ActivityIndicator size="small" animating color="white" />
+            ) : (
+              <Text
+                numberOfLines={1}
+                style={[styles.text, !!textColor && {color: textColor}]}>
+                {text}
+              </Text>
+            )}
+          </View>
+        </TouchableNativeFeedback>
+      </View>
     </View>
   );
 }
