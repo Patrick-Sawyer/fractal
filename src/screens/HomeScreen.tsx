@@ -23,8 +23,6 @@ import {Complex, getCoord, Range} from '../utils/fractalUtils';
 const MIN_SENSITIVITY = 10;
 const MAX_SENSITIVITY = 500;
 const SENSITIVITY_INIT_VALUE = 500;
-
-const INIT_MAX_OUT_VALUE = 5;
 const MIN_MAX_OUT_VALUE = 3;
 const MAX_MAX_OUT_VALUE = 50;
 
@@ -72,7 +70,6 @@ interface FractalSettings {
   juliaSetValue: Complex | null;
   range: Range;
   sensitivity: number;
-  maxOutValue: number;
   colors: string[];
 }
 
@@ -107,12 +104,10 @@ export function HomeScreen({navigation}: Props) {
     juliaSetValue: null,
     sensitivity: SENSITIVITY_INIT_VALUE,
     colors: convertColors(INIT_COLORS),
-    maxOutValue: INIT_MAX_OUT_VALUE,
   });
   const [loading, setLoading] = useState(true);
   const toFixedValue = calcToFixedValue(fractalSettings);
   const [sensitivity, setSensitivity] = useState(SENSITIVITY_INIT_VALUE);
-  const [maxOutValue, setMaxOutValue] = useState(INIT_MAX_OUT_VALUE);
 
   const textColor = textColorAnimation.interpolate({
     inputRange: [0, 1],
@@ -158,7 +153,6 @@ export function HomeScreen({navigation}: Props) {
     };
 
     settings.sensitivity = sensitivity;
-    settings.maxOutValue = maxOutValue;
     settings.colors = convertColors(colors);
 
     setFractalSettings(settings);
@@ -273,7 +267,6 @@ export function HomeScreen({navigation}: Props) {
                 range: INIT_RANGE,
                 juliaSetValue: null,
                 sensitivity,
-                maxOutValue,
                 colors: convertColors(colors),
               });
             } else {
@@ -281,7 +274,6 @@ export function HomeScreen({navigation}: Props) {
                 range: INIT_JULIA_SET_RANGE,
                 juliaSetValue: complex,
                 sensitivity,
-                maxOutValue,
                 colors: convertColors(colors),
               });
             }
@@ -319,16 +311,6 @@ export function HomeScreen({navigation}: Props) {
           value={sensitivity}
         />
         <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>{'Max-out value:'}</Text>
-          <Text style={styles.text}>{maxOutValue}</Text>
-        </View>
-        <Slider
-          onChange={setMaxOutValue}
-          maxValue={MAX_MAX_OUT_VALUE}
-          minValue={MIN_MAX_OUT_VALUE}
-          value={maxOutValue}
-        />
-        <View style={styles.textRow}>
           <View style={styles.subHeader}>
             <Text style={styles.text}>{'Colour map:'}</Text>
             <Text style={[styles.text, styles.opacity]}>
@@ -348,7 +330,6 @@ export function HomeScreen({navigation}: Props) {
               range,
               juliaSetValue,
               sensitivity,
-              maxOutValue,
               colors: convertColors(colors),
             });
           }}

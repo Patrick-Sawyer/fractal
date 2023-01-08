@@ -21,10 +21,14 @@ public class FractalModule extends ReactContextBaseJavaModule {
     return "FractalModule";
   }
 
-  private static boolean hasHitMax(Complex x, int maxNumber) {
-    return (
-      x.real * x.real + x.imaginary * x.imaginary > maxNumber * maxNumber
-    );
+  private static double calculateDistanceBetweenCoordinates(
+    Complex coord1,
+    Complex coord2
+  ) {
+    double real = coord1.real - coord2.real;
+    double imaginary = coord1.imaginary - coord2.imaginary;
+
+    return Math.sqrt(real * real + imaginary * imaginary);
   }
 
   private static double getAxisPosition(
@@ -48,6 +52,11 @@ public class FractalModule extends ReactContextBaseJavaModule {
     return new Complex(real, imaginary);
   }
 
+  private static Complex iterate(Complex zValue, Complex cValue) {
+    Complex square = Complex.square(zValue);
+    return Complex.add(square, cValue);
+  }
+
   @ReactMethod
   public static void getFractal(
     int size,
@@ -59,12 +68,12 @@ public class FractalModule extends ReactContextBaseJavaModule {
     double juliaSetValueImaginary,
     int maxIterations,
     boolean isJuliaSet,
-    int maxNumber,
     ReadableArray colors,
     Promise promise
   ) {
     Range range = new Range(rangeXUpper, rangeXLower, rangeYUpper, rangeYLower);
     Color[] colorMap = Color.getColorMap(maxIterations, colors);
+    Complex centre = new Complex(0, 0);
 
     Complex juliaSetValue = new Complex(
       juliaSetValueReal,
@@ -81,32 +90,39 @@ public class FractalModule extends ReactContextBaseJavaModule {
         new Runnable() {
           public void run() {
             for (int x = 0; x < size; x++) {
-              boolean maxedOut = false;
+              boolean isApproachingInfinity = false;
               int howFast = 0;
-              Complex initCoord = getCoord(size, range, x, yValue);
-              Complex iteration = initCoord;
+              Complex thisCoord = getCoord(size, range, x, yValue);
+              Complex initZValue = isJuliaSet ? thisCoord : centre;
+              Complex zValue = initZValue;
+              Complex cValue = isJuliaSet ? juliaSetValue : thisCoord;
 
               for (int i = 0; i < maxIterations - 1; i++) {
-                Complex square = Complex.square(iteration);
-                iteration =
-                  Complex.add(
-                    square,
-                    (isJuliaSet == true) ? juliaSetValue : initCoord
-                  );
-                boolean hitMax = hasHitMax(iteration, maxNumber);
+                zValue = iterate(zValue, cValue);
 
-                if (hitMax == true) {
-                  maxedOut = true;
+                if (
+                  calculateDistanceBetweenCoordinates(initZValue, zValue) > 3
+                ) {
+                  isApproachingInfinity = true;
                   break;
-                } else {
-                  howFast++;
                 }
+
+                if (
+                  isApproachingInfinity == false &&
+                  calculateDistanceBetweenCoordinates(centre, zValue) > 2
+                ) {
+                  isApproachingInfinity = true;
+                }
+
+                howFast++;
               }
 
               int index = ((size - yValue - 1) * size + x) * 4;
-              data[index] = maxedOut == true ? colorMap[howFast].red : 0;
-              data[index + 1] = maxedOut == true ? colorMap[howFast].green : 0;
-              data[index + 2] = maxedOut == true ? colorMap[howFast].blue : 0;
+              data[index] = isApproachingInfinity ? colorMap[howFast].red : 0;
+              data[index + 1] =
+                isApproachingInfinity ? colorMap[howFast].green : 0;
+              data[index + 2] =
+                isApproachingInfinity ? colorMap[howFast].blue : 0;
             }
           }
         }

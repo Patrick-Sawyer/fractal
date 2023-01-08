@@ -19,7 +19,6 @@ function FractalComponent({
   size,
   setLoading,
   sensitivity,
-  maxOutValue,
   colors,
 }: Props) {
   const pixels = size * PixelRatio.get();
@@ -36,7 +35,6 @@ function FractalComponent({
         range,
         juliaSetValue,
         sensitivity,
-        maxOutValue,
         colors,
       );
       const data = new ImageData(canvas, colorData, pixels, pixels);
