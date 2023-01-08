@@ -9,7 +9,6 @@ interface Props {
   size: number;
   setLoading: (state: boolean) => void;
   sensitivity: number;
-  maxOutValue: number;
   colors: string[];
 }
 

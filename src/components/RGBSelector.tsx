@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
 import {
   StyleSheet,
@@ -6,10 +7,8 @@ import {
   LayoutAnimation,
   UIManager,
   TouchableNativeFeedback,
-  TouchableOpacity,
   PixelRatio,
 } from 'react-native';
-import {INIT_COLORS} from '../screens/HomeScreen';
 import {Colors} from '../theme/theme';
 import {Slider} from './Slider';
 
@@ -48,7 +47,7 @@ interface Props {
 export function RGBSelector({colors, setColors}: Props) {
   const lastAction = useRef(0);
   const [newColor, setNewColor] = useState<Color>({
-    red: 255,
+    red: 0,
     green: 0,
     blue: 0,
   });
@@ -73,20 +72,16 @@ export function RGBSelector({colors, setColors}: Props) {
           />
         ))}
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          setColors(INIT_COLORS);
-        }}>
-        <Text style={[styles.text, styles.button]}>{'Default colours'}</Text>
-      </TouchableOpacity>
       <View style={styles.subHeader}>
-        <Text key={'add-new-color'} style={styles.text}>
+        <Text key={'add-new-color'} style={[styles.text, {paddingBottom: 0}]}>
           {'Add new colour:'}
         </Text>
-        <Text key={'click-to-add'} style={[styles.text, styles.opacity]}>
-          {'Click to add'}
-        </Text>
       </View>
+      <Text key={'click-to-add'} style={[styles.text, styles.info]}>
+        {
+          'Use sliders to add a new colour, then click the colour to add to the colour map.'
+        }
+      </Text>
       <View style={styles.newColor}>
         <SelectedColor
           key={'new-color'}
@@ -103,39 +98,51 @@ export function RGBSelector({colors, setColors}: Props) {
           color={newColor}
         />
       </View>
-      <Text style={styles.text}>{'Red:'}</Text>
-      <Slider
-        minValue={0}
-        maxValue={255}
-        value={newColor.red}
-        onChange={value => {
-          const color = {...newColor};
-          color.red = value;
-          setNewColor(color);
-        }}
-      />
-      <Text style={styles.text}>{'Green:'}</Text>
-      <Slider
-        minValue={0}
-        maxValue={255}
-        onChange={value => {
-          const color = {...newColor};
-          color.green = value;
-          setNewColor(color);
-        }}
-        value={newColor.green}
-      />
-      <Text style={styles.text}>{'Blue:'}</Text>
-      <Slider
-        minValue={0}
-        maxValue={255}
-        value={newColor.blue}
-        onChange={value => {
-          const color = {...newColor};
-          color.blue = value;
-          setNewColor(color);
-        }}
-      />
+      <View style={styles.slider}>
+        <Text style={[styles.text, styles.rgbText]}>{'R:'}</Text>
+        <View style={{flexGrow: 1}}>
+          <Slider
+            minValue={0}
+            maxValue={255}
+            value={newColor.red}
+            onChange={value => {
+              const color = {...newColor};
+              color.red = value;
+              setNewColor(color);
+            }}
+          />
+        </View>
+      </View>
+      <View style={styles.slider}>
+        <Text style={[styles.text, styles.rgbText]}>{'G:'}</Text>
+        <View style={{flexGrow: 1}}>
+          <Slider
+            minValue={0}
+            maxValue={255}
+            onChange={value => {
+              const color = {...newColor};
+              color.green = value;
+              setNewColor(color);
+            }}
+            value={newColor.green}
+          />
+        </View>
+      </View>
+      <View style={styles.slider}>
+        <Text style={[styles.text, styles.rgbText]}>{'B:'}</Text>
+        <View style={{flexGrow: 1}}>
+          <Slider
+            minValue={0}
+            maxValue={255}
+            value={newColor.blue}
+            onChange={value => {
+              const color = {...newColor};
+              color.blue = value;
+              setNewColor(color);
+            }}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -144,9 +151,6 @@ const styles = StyleSheet.create({
   colorPicker: {width: '100%'},
   colorSlider: {
     margin: 10,
-  },
-  rgbText: {
-    marginTop: 10,
   },
   opacity: {
     color: 'rgba(255,255,255,0.5)',
@@ -217,10 +221,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 15,
   },
-  button: {
-    color: 'white',
-    padding: 10,
-    paddingBottom: 15,
-    textAlign: 'center',
+  info: {
+    opacity: 0.25,
+    marginLeft: 0,
+    fontSize: 12,
+    marginTop: 5,
+    paddingTop: 0,
+    marginBottom: 5,
+  },
+  slider: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rgbText: {
+    opacity: 0.25,
+    paddingBottom: 0,
+    minWidth: 20,
+    fontSize: 12,
   },
 });

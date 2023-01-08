@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
   View,
   Animated,
+  TouchableOpacity,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
@@ -23,21 +24,33 @@ import {Complex, getCoord, Range} from '../utils/fractalUtils';
 const MIN_SENSITIVITY = 10;
 const MAX_SENSITIVITY = 500;
 const SENSITIVITY_INIT_VALUE = 500;
-const MIN_MAX_OUT_VALUE = 3;
-const MAX_MAX_OUT_VALUE = 50;
+const BLUE: Color = {red: 10, green: 0, blue: 156};
+const WHITE: Color = {red: 255, green: 255, blue: 255};
+const YELLOW: Color = {
+  red: 255,
+  green: 187,
+  blue: 0,
+};
 
-export const INIT_COLORS: Color[] = [
-  {red: 83, green: 52, blue: 255},
-  {red: 255, green: 255, blue: 255},
-  {red: 255, green: 195, blue: 15},
-  {red: 255, green: 88, blue: 51},
-  {red: 199, green: 0, blue: 57},
-  {red: 144, green: 12, blue: 63},
-  {red: 88, green: 24, blue: 69},
-];
+const MAROON: Color = {
+  red: 144,
+  green: 12,
+  blue: 63,
+};
 
-const convertColors = (colors: Color[]): string[] => {
-  return colors.map(({red, green, blue}) => `${red},${green},${blue}`);
+export const INIT_COLORS: Color[] = [BLUE, WHITE, YELLOW, MAROON];
+
+const convertColors = (colors: Color[], repetition = 1): string[] => {
+  const colorMap = colors.map(
+    ({red, green, blue}) => `${red},${green},${blue}`,
+  );
+
+  let fullColorMap: string[] = [];
+
+  for (let i = 0; i < repetition; i++) {
+    fullColorMap = fullColorMap.concat(colorMap);
+  }
+  return fullColorMap;
 };
 
 interface Props {
@@ -92,19 +105,23 @@ interface Touch {
   y: number;
 }
 
+const DEFAULT_SETTINGS = {
+  range: INIT_RANGE,
+  juliaSetValue: null,
+  sensitivity: SENSITIVITY_INIT_VALUE,
+  colors: convertColors(INIT_COLORS, 1),
+};
+
 export function HomeScreen({navigation}: Props) {
   const size = useWindowDimensions().width - 16;
   const [renderFractal, setRenderFractal] = useState(false);
   const [complex, setComplex] = useState<Complex>({real: 0, imaginary: 0});
   const [colors, setColors] = useState<Color[]>(INIT_COLORS);
   const [touch, setTouch] = useState<Touch | null>(null);
+  const [colourMapRepetition, setColourMapRepetition] = useState(1);
   const textColorAnimation = useRef(new Animated.Value(0)).current;
-  const [fractalSettings, setFractalSettings] = useState<FractalSettings>({
-    range: INIT_RANGE,
-    juliaSetValue: null,
-    sensitivity: SENSITIVITY_INIT_VALUE,
-    colors: convertColors(INIT_COLORS),
-  });
+  const [fractalSettings, setFractalSettings] =
+    useState<FractalSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const toFixedValue = calcToFixedValue(fractalSettings);
   const [sensitivity, setSensitivity] = useState(SENSITIVITY_INIT_VALUE);
@@ -153,7 +170,7 @@ export function HomeScreen({navigation}: Props) {
     };
 
     settings.sensitivity = sensitivity;
-    settings.colors = convertColors(colors);
+    settings.colors = convertColors(colors, colourMapRepetition);
 
     setFractalSettings(settings);
   };
@@ -267,14 +284,14 @@ export function HomeScreen({navigation}: Props) {
                 range: INIT_RANGE,
                 juliaSetValue: null,
                 sensitivity,
-                colors: convertColors(colors),
+                colors: convertColors(colors, colourMapRepetition),
               });
             } else {
               setFractalSettings({
                 range: INIT_JULIA_SET_RANGE,
                 juliaSetValue: complex,
                 sensitivity,
-                colors: convertColors(colors),
+                colors: convertColors(colors, colourMapRepetition),
               });
             }
             setComplex({real: 0, imaginary: 0});
@@ -298,12 +315,39 @@ export function HomeScreen({navigation}: Props) {
             {'Settings'}
           </Text>
         </View>
+        <Text style={[styles.text, styles.info, {marginBottom: 10}]}>
+          {
+            'Change these settings as you wish. Each setting will have an optimum level depending on the fractal being generated. If you find the image is too noisy, sometimes lowering the maximum iterations or changing the colour settings will help'
+          }
+        </Text>
+        <View style={{marginVertical: 10}}>
+          <Button
+            text={'Re-render with these settings'}
+            disabled={loading}
+            onPress={() => {
+              const {range, juliaSetValue} = fractalSettings;
+
+              setFractalSettings({
+                range,
+                juliaSetValue,
+                sensitivity,
+                colors: convertColors(colors, colourMapRepetition),
+              });
+            }}
+            color={'rgba(0,0,0,0.3)'}
+          />
+        </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>
             {'Maximum iterations per pixel:'}
           </Text>
           <Text style={styles.text}>{sensitivity}</Text>
         </View>
+        <Text style={[styles.text, styles.info]}>
+          {
+            'Decrease for quicker render times, increase for more accurate fractal rendering.'
+          }
+        </Text>
         <Slider
           onChange={setSensitivity}
           maxValue={MAX_SENSITIVITY}
@@ -311,30 +355,39 @@ export function HomeScreen({navigation}: Props) {
           value={sensitivity}
         />
         <View style={styles.textRow}>
-          <View style={styles.subHeader}>
+          <Text style={[styles.text, styles.light]}>
+            {'Colour map repetition:'}
+          </Text>
+          <Text style={styles.text}>{colourMapRepetition}</Text>
+        </View>
+        <Text style={[styles.text, styles.info]}>
+          {'Increase if the gradient is too subtle.'}
+        </Text>
+        <Slider
+          onChange={setColourMapRepetition}
+          maxValue={5}
+          minValue={1}
+          value={colourMapRepetition}
+        />
+        <View style={styles.textRow}>
+          <View style={[styles.subHeader, {marginBottom: 5}]}>
             <Text style={styles.text}>{'Colour map:'}</Text>
-            <Text style={[styles.text, styles.opacity]}>
-              {'Hold to remove'}
-            </Text>
           </View>
         </View>
+        <Text style={[styles.text, styles.info]}>
+          {'The colours used in the image. Hold one to remove it.'}
+        </Text>
         <RGBSelector colors={colors} setColors={setColors} />
-        <View style={{height: 10}} />
-        <Button
-          text={'Re-render with these settings'}
-          disabled={loading}
+        <TouchableOpacity
           onPress={() => {
-            const {range, juliaSetValue} = fractalSettings;
-
-            setFractalSettings({
-              range,
-              juliaSetValue,
-              sensitivity,
-              colors: convertColors(colors),
-            });
-          }}
-          color={'rgba(0,0,0,0.3)'}
-        />
+            setColors(INIT_COLORS);
+            setColourMapRepetition(1);
+            setSensitivity(SENSITIVITY_INIT_VALUE);
+          }}>
+          <Text style={[styles.text, styles.button]}>
+            {'Restore default settings'}
+          </Text>
+        </TouchableOpacity>
       </View>
       <Text style={[styles.trippy, {color: Colors.blue}]}>{'N'}</Text>
       <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
@@ -374,6 +427,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   light: {
+    marginBottom: 5,
     opacity: 0.5,
   },
   textRow: {
@@ -442,5 +496,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     borderRadius: 5,
     elevation: 4,
+  },
+  info: {opacity: 0.25, marginLeft: 0, fontSize: 12},
+  button: {
+    color: 'white',
+    padding: 10,
+    paddingBottom: 15,
+    textAlign: 'center',
   },
 });
