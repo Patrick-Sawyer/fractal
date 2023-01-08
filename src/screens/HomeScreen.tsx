@@ -302,7 +302,9 @@ export function HomeScreen({navigation}: Props) {
           }}
         />
         <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large, {marginTop: 0}]}>{'Settings'}</Text>
+          <Text style={[styles.text, styles.large, {marginTop: 0}]}>
+            {'Settings'}
+          </Text>
         </View>
         <View style={styles.textRow}>
           <Text style={[styles.text, styles.light]}>
