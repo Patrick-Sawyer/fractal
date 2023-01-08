@@ -10,6 +10,7 @@ import {
   View,
   Animated,
   TouchableOpacity,
+  LayoutAnimation,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Button} from '../components/Button';
@@ -119,6 +120,7 @@ export function HomeScreen({navigation}: Props) {
   const [colors, setColors] = useState<Color[]>(INIT_COLORS);
   const [touch, setTouch] = useState<Touch | null>(null);
   const [colourMapRepetition, setColourMapRepetition] = useState(1);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const textColorAnimation = useRef(new Animated.Value(0)).current;
   const [fractalSettings, setFractalSettings] =
     useState<FractalSettings>(DEFAULT_SETTINGS);
@@ -310,84 +312,103 @@ export function HomeScreen({navigation}: Props) {
             navigation.navigate('Explainer');
           }}
         />
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.large, {marginTop: 0}]}>
-            {'Settings'}
-          </Text>
-        </View>
-        <Text style={[styles.text, styles.info, {marginBottom: 10}]}>
-          {
-            'Change these settings as you wish. Each setting will have an optimum level depending on the fractal being generated. If you find the image is too noisy, sometimes lowering the maximum iterations or changing the colour settings will help'
-          }
-        </Text>
-        <View style={{marginVertical: 10}}>
-          <Button
-            text={'Re-render with these settings'}
-            disabled={loading}
-            onPress={() => {
-              const {range, juliaSetValue} = fractalSettings;
-
-              setFractalSettings({
-                range,
-                juliaSetValue,
-                sensitivity,
-                colors: convertColors(colors, colourMapRepetition),
-              });
-            }}
-            color={'rgba(0,0,0,0.3)'}
-          />
-        </View>
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>
-            {'Maximum iterations per pixel:'}
-          </Text>
-          <Text style={styles.text}>{sensitivity}</Text>
-        </View>
-        <Text style={[styles.text, styles.info]}>
-          {
-            'Decrease for quicker render times, increase for more accurate fractal rendering.'
-          }
-        </Text>
-        <Slider
-          onChange={setSensitivity}
-          maxValue={MAX_SENSITIVITY}
-          minValue={MIN_SENSITIVITY}
-          value={sensitivity}
-        />
-        <View style={styles.textRow}>
-          <Text style={[styles.text, styles.light]}>
-            {'Colour map repetition:'}
-          </Text>
-          <Text style={styles.text}>{colourMapRepetition}</Text>
-        </View>
-        <Text style={[styles.text, styles.info]}>
-          {'Increase if the gradient is too subtle.'}
-        </Text>
-        <Slider
-          onChange={setColourMapRepetition}
-          maxValue={5}
-          minValue={1}
-          value={colourMapRepetition}
-        />
-        <View style={styles.textRow}>
-          <View style={[styles.subHeader, {marginBottom: 5}]}>
-            <Text style={styles.text}>{'Colour map:'}</Text>
-          </View>
-        </View>
-        <Text style={[styles.text, styles.info]}>
-          {'The colours used in the image. Hold one to remove it.'}
-        </Text>
-        <RGBSelector colors={colors} setColors={setColors} />
+      </View>
+      <View
+        style={[
+          styles.section,
+          styles.board,
+          {marginTop: 8, paddingTop: 10, paddingBottom: 5, overflow: 'hidden'},
+        ]}>
         <TouchableOpacity
           onPress={() => {
-            setColors(INIT_COLORS);
-            setColourMapRepetition(1);
-            setSensitivity(SENSITIVITY_INIT_VALUE);
+            LayoutAnimation.configureNext(
+              LayoutAnimation.Presets.easeInEaseOut,
+            );
+            setSettingsVisible(!settingsVisible);
           }}>
-          <Text style={[styles.text, styles.button]}>
-            {'Restore default settings'}
-          </Text>
+          <View style={styles.textRow}>
+            <Text style={[styles.text, styles.large, {marginTop: 0}]}>
+              {'Settings'}
+            </Text>
+          </View>
         </TouchableOpacity>
+        {settingsVisible && (
+          <>
+            <Text style={[styles.text, styles.info, {marginBottom: 10}]}>
+              {
+                'Change these settings as you wish. Each setting will have an optimum level depending on the fractal being generated. If you find the image is too noisy, sometimes lowering the maximum iterations or changing the colour settings will help'
+              }
+            </Text>
+            <View style={{marginVertical: 10}}>
+              <Button
+                text={'Re-render with these settings'}
+                disabled={loading}
+                onPress={() => {
+                  const {range, juliaSetValue} = fractalSettings;
+
+                  setFractalSettings({
+                    range,
+                    juliaSetValue,
+                    sensitivity,
+                    colors: convertColors(colors, colourMapRepetition),
+                  });
+                }}
+                color={'rgba(0,0,0,0.3)'}
+              />
+            </View>
+            <View style={styles.textRow}>
+              <Text style={[styles.text, styles.light]}>
+                {'Maximum iterations per pixel:'}
+              </Text>
+              <Text style={styles.text}>{sensitivity}</Text>
+            </View>
+            <Text style={[styles.text, styles.info]}>
+              {
+                'Decrease for quicker render times, increase for more accurate fractal rendering.'
+              }
+            </Text>
+            <Slider
+              onChange={setSensitivity}
+              maxValue={MAX_SENSITIVITY}
+              minValue={MIN_SENSITIVITY}
+              value={sensitivity}
+            />
+            <View style={styles.textRow}>
+              <Text style={[styles.text, styles.light]}>
+                {'Colour map repetition:'}
+              </Text>
+              <Text style={styles.text}>{colourMapRepetition}</Text>
+            </View>
+            <Text style={[styles.text, styles.info]}>
+              {'Increase if the gradient is too subtle.'}
+            </Text>
+            <Slider
+              onChange={setColourMapRepetition}
+              maxValue={5}
+              minValue={1}
+              value={colourMapRepetition}
+            />
+            <View style={styles.textRow}>
+              <View style={[styles.subHeader, {marginBottom: 5}]}>
+                <Text style={styles.text}>{'Colour map:'}</Text>
+              </View>
+            </View>
+            <Text style={[styles.text, styles.info]}>
+              {'The colours used in the image. Hold one to remove it.'}
+            </Text>
+            <RGBSelector colors={colors} setColors={setColors} />
+            <TouchableOpacity
+              onPress={() => {
+                setColors(INIT_COLORS);
+                setColourMapRepetition(1);
+                setSensitivity(SENSITIVITY_INIT_VALUE);
+              }}>
+              <Text style={[styles.text, styles.button]}>
+                {'Restore default settings'}
+              </Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
       <Text style={[styles.trippy, {color: Colors.blue}]}>{'N'}</Text>
       <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
